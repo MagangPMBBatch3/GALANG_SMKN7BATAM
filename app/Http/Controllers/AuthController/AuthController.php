@@ -33,8 +33,9 @@ class AuthController
 
     public function dashboard()
     {
-        return view('dashboard');
+        return view('dashboard/index');
     }
+
 
     public function logout(Request $request)
     {
