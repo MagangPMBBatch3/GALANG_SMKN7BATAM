@@ -10,7 +10,7 @@
         @endif
 
         <div class="mb-4">
-            <label>Email</label>
+            <label>Emails</label>
             <input type="email" name="email" class="w-full p-2 border rounded" required>
         </div>
 
