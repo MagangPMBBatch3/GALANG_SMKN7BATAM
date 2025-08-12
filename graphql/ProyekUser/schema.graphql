@@ -1,0 +1,49 @@
+type ProyekUser {
+    id: ID!
+    proyek_id: ID
+    user_profile_id: ID!
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at: DateTime
+
+    proyek: Proyek @belongsTo
+    userprofile: UserProfile @belongsTo
+}
+
+input CreateProyekUserInput {
+    proyek_id: ID
+    user_profile_id: ID!
+}
+
+input UpdateProyekUserInput {
+    proyek_id: ID
+    user_profile_id: ID
+}
+
+extend type Query {
+    allProyekUsers: [ProyekUser!]!
+    @all(model: "App\\Models\\ProyekUser\\ProyekUser")
+
+    proyekUser(id: ID! @eq): ProyekUser
+    @find(model: "App\\Models\\ProyekUser\\ProyekUser")
+
+    proyekUsersByUserProfile(user_profile_id: ID! @where(operator: "like", key: "user_profile_id")): [ProyekUser!]!
+    @all(model: "App\\Models\\ProyekUser\\ProyekUser")
+}
+
+extend type Mutation {
+    createProyekUser(input: CreateProyekUserInput! @spread): ProyekUser
+    @create(model: "App\\Models\\ProyekUser\\ProyekUser")
+
+    updateProyekUser(id: ID! @eq, input: UpdateProyekUserInput! @spread): ProyekUser
+    @update(model: "App\\Models\\ProyekUser\\ProyekUser")
+
+    deleteProyekUser(id: ID! @eq): ProyekUser
+    @delete(model: "App\\Models\\ProyekUser\\ProyekUser")
+
+    restoreProyekUser(id: ID!): ProyekUser
+    @field(resolver: "App\\GraphQL\\ProyekUser\\Mutations\\ProyekUserMutation@restore")
+
+    forceDeleteProyekUser(id: ID!): ProyekUser
+    @field(resolver: "App\\GraphQL\\ProyekUser\\Mutations\\ProyekUserMutation@forceDelete")
+}

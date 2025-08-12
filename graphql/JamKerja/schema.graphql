@@ -1,0 +1,76 @@
+type JamKerja {
+    id: ID!
+    user_profile_id: ID
+    no_wbs: String
+    kode_proyek: String
+    aktivitas_id: ID    
+    tanggal: Date
+    jumlah_jam: Float
+    keterangan: String
+    status_id: ID
+    mode_id: ID
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at: DateTime
+
+
+    userprofile: UserProfile @belongsTo
+    aktivitas: Aktivitas @belongsTo
+    proyek: Proyek @belongsTo
+    status: StatusJamKerja @belongsTo
+    mode: ModeJamKerja @belongsTo
+    
+}
+
+input CreateJamKerjaInput {
+    user_profile_id: ID
+    no_wbs: String
+    kode_proyek: String
+    aktivitas_id: ID    
+    tanggal: Date!
+    jumlah_jam: Float!
+    Keterangan: String
+    status_id: ID
+    mode_id: ID
+}
+
+input UpdateJamKerjaInput {
+    user_profile_id: ID
+    no_wbs: String
+    kode_proyek: String
+    aktivitas_id: ID    
+    tanggal: Date
+    jumlah_jam: Float
+    Keterangan: String
+    status_id: ID
+    mode_id: ID
+}
+
+extend type Query {
+    allJamKerja: [JamKerja!]!
+    @all(model: "App\\Models\\JamKerja\\JamKerja")
+
+    jamKerja(id: ID! @eq): JamKerja
+    @find(model: "App\\Models\\JamKerja\\JamKerja")
+
+    jamKerjasByUserProfile(user_profile_id: ID! @where(operator: "like", key: "user_profile_id")): [JamKerja!]!
+    @all(model: "App\\Models\\JamKerja\\JamKerja")
+}
+
+extend type Mutation {
+    createJamKerja(input: CreateJamKerjaInput! @spread): JamKerja
+    @create(model: "App\\Models\\JamKerja\\JamKerja")
+
+    updateJamKerja(id: ID! @eq, input: UpdateJamKerjaInput! @spread): JamKerja
+    @update(model: "App\\Models\\JamKerja\\JamKerja")
+
+
+    deleteJamKerja(id: ID! @eq): JamKerja
+    @delete(model: "App\\Models\\JamKerja\\JamKerja")
+
+    restoreJamKerja(id: ID!): JamKerja
+    @field(resolver: "App\\GraphQL\\JamKerja\\Mutations\\JamKerjaMutation@restore")
+
+    forceDeleteJamKerja(id: ID!): JamKerja
+    @field(resolver: "App\\GraphQL\\JamKerja\\Mutations\\JamKerjaMutation@forceDelete")
+}

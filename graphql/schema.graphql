@@ -1,0 +1,23 @@
+scalar Date
+scalar DateTime
+#import ./Bagian/schema.graphql
+#import ./Level/schema.graphql
+#import ./Status/schema.graphql
+#import ./User/schema.graphql
+#import ./UserProfile/schema.graphql
+#import ./Proyek/schema.graphql 
+#import ./Keterangan/schema.graphql
+#import ./Lembur/schema.graphql
+#import ./ProyekUser/schema.graphql
+#import ./JamPerTanggal/schema.graphql
+#import ./JenisPesan/schema.graphql
+#import ./Pesan/schema.graphql
+#import ./Aktivitas/schema.graphql
+#import ./ModeJamKerja/schema.graphql
+#import ./StatusJamKerja/schema.graphql 
+#import ./JamKerja/schema.graphql
+
+
+    
+
+

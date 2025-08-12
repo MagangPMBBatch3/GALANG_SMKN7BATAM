@@ -1,0 +1,61 @@
+type Pesan {
+    id: ID!
+    pengirim: String
+    penerima: String
+    isi: String
+    parent_id: Int
+    tgl_pesan: DateTime
+    jenis_id: ID
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at: DateTime
+
+    jenis: JenisPesan @belongsTo
+}
+
+input CreatePesanInput {
+    pengirim: String
+    penerima: String
+    isi: String
+    parent_id: Int
+    tgl_pesan: DateTime
+    jenis_id: ID
+}
+
+input UpdatePesanInput {
+    pengirim: String
+    penerima: String
+    isi: String
+    parent_id: Int
+    tgl_pesan: DateTime
+    jenis_id: ID
+}
+
+
+extend type Query {
+    allPesan: [Pesan!]!
+    @all(model: "App\\Models\\Pesan\\Pesan")
+
+    pesan(id: ID! @eq): Pesan
+    @find(model: "App\\Models\\Pesan\\Pesan")
+
+    pesansByUserProfile(user_profile_id: ID! @where(operator: "like", key: "user_profile_id")): [Pesan!]!
+    @all(model: "App\\Models\\Pesan\\Pesan")
+}
+
+extend type Mutation {
+    createPesan(input: CreatePesanInput! @spread): Pesan
+    @create(model: "App\\Models\\Pesan\\Pesan")
+
+    updatePesan(id: ID! @eq, input: UpdatePesanInput! @spread): Pesan
+    @update(model: "App\\Models\\Pesan\\Pesan")
+
+    deletePesan(id: ID! @eq): Pesan
+    @delete(model: "App\\Models\\Pesan\\Pesan")
+
+    restorePesan(id: ID!): Pesan
+    @field(resolver: "App\\GraphQL\\Pesan\\Mutations\\PesanMutation@restore")
+
+    forceDeletePesan(id: ID!): Pesan
+    @field(resolver: "App\\GraphQL\\Pesan\\Mutations\\PesanMutation@forceDelete")
+}
