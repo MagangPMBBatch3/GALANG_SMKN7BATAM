@@ -12,7 +12,7 @@ class UserProfileMutation
             : null;
     }
 
-    public function forceDelete($_, array $args)
+    public function forceDelete($_, array $args): ?UserProfile
     {
         $userProfile = UserProfile::withTrashed()->find($args['id']);
         if ($userProfile) {

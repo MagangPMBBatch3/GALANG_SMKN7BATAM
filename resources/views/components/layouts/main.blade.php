@@ -8,9 +8,11 @@
     <aside class="w-64 h-screen p-4 bg-blue-400 shadow">
         <h2 class="text-xl text-white font-bold mb-5">Menu</h2>
         <ul>
-            <li><a href="#" class="block py-2 hover:bg-blue-500 rounded px-2 text-white">Dashboard</a></li>
-            <li><a href="#" class="block py-2 hover:bg-blue-500 rounded px-2 text-white">Bagian</a></li>
-            <li><a href="#" class="block py-2 hover:bg-blue-500 rounded px-2 text-white">Level</a></li>
+            <li><a href="{{ route('dashboard') }}" class="block py-2 hover:bg-blue-500 rounded px-2 text-white">Dashboard</a></li>
+            <li><a href="{{ route('bagian.index') }}" class="block py-2 hover:bg-blue-500 rounded px-2 text-white">
+        Bagian
+    </a></li>
+            <li><a href="{{ route('level.index') }}" class="block py-2 hover:bg-blue-500 rounded px-2 text-white">Level</a></li>
         </ul>
     </aside>
     <div class="flex-1 p-6">
