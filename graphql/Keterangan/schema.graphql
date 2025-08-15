@@ -25,7 +25,10 @@ input UpdateKeteranganInput {
 
 extend type Query {
     allKeterangans: [Keterangan!]!
-    @all(model: "App\\Models\\Keterangan\\Keterangan")
+    @all(model: "App\\Models\\Keterangan\\Keterangan")  
+
+    allKeteranganArsip: [Keterangan!]!
+    @field(resolver: "App\\GraphQL\\Keterangan\\Queries\\KeteranganQuery@allKeteranganArsip")
 
 }
 

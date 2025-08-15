@@ -31,6 +31,9 @@ extend type Query {
 
     userByEmail(email: String! @where(operator: "like", key: "email")): [User!]!
     @all(model: "App\\Models\\User\\User")
+
+    allUserArsip: [User!]!
+    @field(resolver: "App\\GraphQL\\User\\Queries\\UserQuery@allUserArsip")
 }
 
 extend type Mutation {

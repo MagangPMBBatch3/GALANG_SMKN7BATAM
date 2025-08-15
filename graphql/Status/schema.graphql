@@ -7,10 +7,12 @@ type Status {
 }
 
 input CreateStatusInput {
+    
     nama: String!
 }
 
 input UpdateStatusInput {
+    id: ID!
     nama: String
 }
 
@@ -23,6 +25,9 @@ extend type Query {
 
     statusByNama(nama: String! @where(operator: "like", key: "nama")): [Status!]!
     @all(model: "App\\Models\\Status\\Statuses")
+
+    allStatusArsip: [Status!]!
+    @field(resolver: "App\\GraphQL\\Status\\Queries\\StatusQuery@allStatusArsip")   
 }
 
 extend type Mutation {

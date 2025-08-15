@@ -17,7 +17,7 @@ async function updateLevel() {
     }
     const mutation = `
         mutation {
-            updateLevel(id: ${id}, input: { nama: "${nama}" }) {
+            updateLevel(input: { id: ${id}, nama: "${nama}" }) {
                 id
                 nama
             }
@@ -28,4 +28,6 @@ async function updateLevel() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query: mutation })
     });
+    closeEditLevelModal();
+    loadLevelData();
 }

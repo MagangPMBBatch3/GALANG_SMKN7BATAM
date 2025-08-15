@@ -1,5 +1,5 @@
 async function loadLevelData() {
-    // Ambil data aktif
+
     const queryAktif = `
         query {
             allLevel {
@@ -16,7 +16,7 @@ async function loadLevelData() {
     const dataAktif = await resAktif.json();
     renderLevelTable(dataAktif?.data?.allLevel || [], 'dataLevel', true);
 
-    // Ambil data arsip
+   
     const queryArsip = `
         query {
             allLevelArsip {
@@ -123,7 +123,7 @@ async function restoreLevel(id) {
     loadLevelData();
 }
 
-// filepath: public/js/level/level.js
+
 function openAddLevelModal() {
     document.getElementById('modalAddLevel').classList.remove('hidden');
 }
@@ -196,7 +196,7 @@ function showTab(tab) {
         tabArsip.classList.add('bg-gray-300', 'text-black');
         tableAktif.classList.remove('hidden');
         tableArsip.classList.add('hidden');
-        loadLevelData(); // Tambahkan ini
+        loadLevelData(); 
     } else {
         tabArsip.classList.add('bg-blue-500', 'text-white');
         tabArsip.classList.remove('bg-gray-300', 'text-black');
@@ -204,7 +204,7 @@ function showTab(tab) {
         tabAktif.classList.remove('bg-blue-500', 'text-white');
         tableArsip.classList.remove('hidden');
         tableAktif.classList.add('hidden');
-        loadLevelData(); // Tambahkan ini
+        loadLevelData();
     }
 }
 

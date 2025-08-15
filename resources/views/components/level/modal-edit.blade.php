@@ -1,4 +1,4 @@
-<!-- filepath: resources/views/components/level/modal-edit.blade.php -->
+
 <div id="modalEditLevel" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center hidden z-50">
     <div class="bg-white rounded p-6 w-full max-w-md">
         <h2 class="text-lg font-bold mb-4">Edit Level</h2>

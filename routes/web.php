@@ -1,9 +1,8 @@
+
 <?php
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController\AuthController;
-use App\Http\Controllers\BagianController;
-use App\Http\Controllers\LevelController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,16 +18,26 @@ use App\Http\Controllers\LevelController;
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::get('/bagian', [BagianController::class, 'index'])->name('bagian.index');
-
-Route::get('/level', [LevelController::class, 'index'])->name('level.index');
-
-
-
-
-
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
+    Route::get('/bagian', [AuthController::class, 'bagian'])->name('bagian');
+    Route::get('/level', [AuthController::class, 'level'])->name('level');
+    Route::get('/status', [AuthController::class, 'status'])->name('status');
+    Route::get('/user', [AuthController::class, 'user'])->name('user');
+    Route::get('/userprofile', [AuthController::class, 'userprofile'])->name('userprofile');
+    Route::get('/proyek', [AuthController::class, 'proyek'])->name('proyek'); 
+    Route::get('/keterangan', [AuthController::class, 'keterangan'])->name('keterangan');
+    Route::get('/aktivitas', [AuthController::class, 'aktivitas'])->name('aktivitas');
+    Route::get('/ModeJamKerja', [AuthController::class, 'ModeJamKerja'])->name('mode.jam.kerja');
+    Route::get('/StatusJamKerja', [AuthController::class, 'StatusJamKerja'])->name('status.jam.kerja');
+
+
+    Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
+    Route::post('/profile', [AuthController::class, 'updateProfile'])->name('profile.update');
+
+
+    Route::post('/upload-foto', [AuthController::class, 'uploadFoto'])->name('upload.foto');
+
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
 

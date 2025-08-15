@@ -1,0 +1,37 @@
+function openAddUserModal() {
+    document.getElementById('modalAddUser').classList.remove('hidden');
+}
+
+function closeAddUserModal() {
+    document.getElementById('modalAddUser').classList.add('hidden');
+}
+
+async function createUser() {
+    const name = document.getElementById('addUserNama').value.trim();
+    const email = document.getElementById('addUserEmail').value.trim();
+    const password = document.getElementById('addUserPassword').value;
+
+    if (!name || !email || !password) {
+        alert('Nama, Email, dan Password harus diisi!');
+        return;
+    }
+
+  
+    const mutation = `
+        mutation {
+            createUser(input: { name: "${name}", email: "${email}", password: "${password}" }) {
+                id
+                name
+                email
+                password
+            }
+        }
+    `;
+    await fetch('/graphql', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: mutation })
+    });
+    closeAddUserModal();
+    loadUserData();
+}

@@ -20,6 +20,9 @@ extend type Query {
 
     statusJamKerja(id: ID! @eq): StatusJamKerja
     @find(model: "App\\Models\\StatusJamKerja\\StatusJamKerja")
+
+    allStatusJamKerjaArsip: [StatusJamKerja!]!
+    @field(resolver: "App\\GraphQL\\StatusJamKerja\\Queries\\StatusJamKerjaQuery@allStatusJamKerjaArsip")
 }
 
 extend type Mutation {

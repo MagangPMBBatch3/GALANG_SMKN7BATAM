@@ -4,6 +4,8 @@ namespace App\Http\Controllers\AuthController;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use App\Models\User\User;
 
 class AuthController
 {
@@ -35,6 +37,73 @@ class AuthController
     {
         return view('dashboard/index');
     }
+
+     public function bagian()
+    {
+        return view('bagian.index');
+    }
+
+     public function level()
+    {
+        return view('level.index');
+    }
+
+     public function status()
+    {
+        return view('status.index');
+    }
+
+    public function user()
+    {
+        return view('user.index');
+    }
+
+    public function userprofile()
+    {
+        return view('userprofile.index');
+    }
+
+    public function proyek()
+{
+    return view('proyek.index');
+}
+
+public function keterangan()
+{
+    return view('keterangan.index');
+}
+
+public function aktivitas()
+{
+    return view('aktivitas.index');
+}
+
+public function ModeJamKerja()
+{
+    return view('mode-jam-kerja.index');
+}
+
+public function StatusJamKerja()
+{
+    return view('status-jam-kerja.index');
+}
+
+    public function uploadFoto(Request $request)
+{
+    if ($request->hasFile('foto')) {
+        $file = $request->file('foto');
+        if ($file->isValid() && str_starts_with($file->getMimeType(), 'image/')) {
+            $path = $file->store('public/foto'); 
+            $url = Storage::url($path); 
+            return response()->json(['url' => $url]);
+        }
+    }
+    return response()->json(['error' => 'File tidak valid atau bukan gambar'], 400);
+}
+
+    
+
+    
 
 
     public function logout(Request $request)

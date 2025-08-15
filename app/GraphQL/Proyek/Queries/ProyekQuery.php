@@ -22,4 +22,9 @@ class ProyekQuery
        
     }
 
+    public function allProyekArsip($_, array $args)
+    {
+        return Proyek::onlyTrashed()->get();
+    }
+
 }

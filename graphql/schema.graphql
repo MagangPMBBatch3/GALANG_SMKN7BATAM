@@ -1,5 +1,6 @@
 scalar Date
 scalar DateTime
+
 #import ./Bagian/schema.graphql
 #import ./Level/schema.graphql
 #import ./Status/schema.graphql

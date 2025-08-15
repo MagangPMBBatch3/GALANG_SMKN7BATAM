@@ -28,6 +28,9 @@ extend type Query {
 
     aktivitas(id: ID! @eq): Aktivitas
     @find(model: "App\\Models\\Aktivitas\\Aktivitas")
+
+    allAktivitasArsip: [Aktivitas!]!
+    @field(resolver: "App\\GraphQL\\Aktivitas\\Queries\\AktivitasQuery@allAktivitasArsip")
 }
 
 extend type Mutation {
