@@ -20,6 +20,7 @@
         </div>
 
         <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Login</button>
+        <a href="/register" class="block text-center text-blue-500 mt-4 hover:underline">Belum punya akun? Daftar</a>
 
     </form>
 </x-layouts.auth>

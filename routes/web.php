@@ -18,6 +18,8 @@ use App\Http\Controllers\AuthController\AuthController;
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 
+Route::get('/register', [AuthController::class, 'showRegisterForm']);
+
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
     Route::get('/bagian', [AuthController::class, 'bagian'])->name('bagian');
@@ -30,6 +32,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/aktivitas', [AuthController::class, 'aktivitas'])->name('aktivitas');
     Route::get('/ModeJamKerja', [AuthController::class, 'ModeJamKerja'])->name('mode.jam.kerja');
     Route::get('/StatusJamKerja', [AuthController::class, 'StatusJamKerja'])->name('status.jam.kerja');
+    Route::get('/progresKerja', [AuthController::class, 'progresKerja'])->name('progres.kerja');
 
 
     Route::get('/profile', [AuthController::class, 'profile'])->name('profile');

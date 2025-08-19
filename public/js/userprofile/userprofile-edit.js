@@ -1,7 +1,6 @@
 
 async function loadSelectOptions() {
     try {
-        // Fetch levels
         const levelRes = await fetch('/graphql', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -18,7 +17,6 @@ async function loadSelectOptions() {
                 levels.map(l => `<option value="${l.id}">${l.nama}</option>`).join('');
         }
 
-        // Fetch statuses
         const statusRes = await fetch('/graphql', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -35,7 +33,6 @@ async function loadSelectOptions() {
                 statuses.map(s => `<option value="${s.id}">${s.nama}</option>`).join('');
         }
 
-        // Fetch bagians
         const bagianRes = await fetch('/graphql', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -83,25 +80,21 @@ function openEditUserProfileModal() {
         return;
     }
 
-    // Open modal and populate fields after loading select options
     loadSelectOptions().then(() => {
         console.log('Populating modal fields...');
 
-        // Set hidden ID field
         const idInput = document.getElementById('editUserProfileId');
         if (idInput) {
             idInput.value = profile.id || '';
             console.log('Set editUserProfileId:', idInput.value);
         }
 
-        // Set hidden user_id field
         const userIdInput = document.getElementById('editUserProfileUserId');
         if (userIdInput) {
             userIdInput.value = profile.user_id || window.authUserId || '';
             console.log('Set editUserProfileUserId:', userIdInput.value);
         }
 
-        // Set text inputs
         const namaLengkapInput = document.getElementById('editUserProfileNamaLengkap');
         if (namaLengkapInput) {
             namaLengkapInput.value = profile.nama_lengkap || '';
@@ -120,7 +113,6 @@ function openEditUserProfileModal() {
             console.log('Set editUserProfileAlamat:', alamatInput.value);
         }
 
-        // Set dropdowns
         const bagianSelect = document.getElementById('editUserProfileBagianId');
         if (bagianSelect) {
             bagianSelect.value = profile.bagian_id || '';
@@ -139,7 +131,6 @@ function openEditUserProfileModal() {
             console.log('Set editUserProfileStatusId:', statusSelect.value);
         }
 
-        // Set photo preview
         const existingFotoInput = document.getElementById('editUserProfileFotoExisting');
         const preview = document.getElementById('editUserProfileFotoPreview');
         if (existingFotoInput && preview) {
@@ -156,7 +147,6 @@ function openEditUserProfileModal() {
             }
         }
 
-        // Show the modal
         const modal = document.getElementById('modalEditUserProfile');
         if (modal) {
             modal.classList.remove('hidden');

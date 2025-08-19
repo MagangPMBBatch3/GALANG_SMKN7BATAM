@@ -11,6 +11,10 @@ class AuthController
 {
     public function showLogin()
     {
+   
+        if (Auth::check()) {
+            return redirect()->route('dashboard');
+        }
         return view('auth.login');
     }
 
@@ -29,8 +33,6 @@ class AuthController
         return back()->withErrors([
             'email' => 'Email atau password yang salah.',
         ]);
-
-
     }
 
     public function dashboard()
@@ -38,17 +40,17 @@ class AuthController
         return view('dashboard/index');
     }
 
-     public function bagian()
+    public function bagian()
     {
         return view('bagian.index');
     }
 
-     public function level()
+    public function level()
     {
         return view('level.index');
     }
 
-     public function status()
+    public function status()
     {
         return view('status.index');
     }
@@ -64,47 +66,52 @@ class AuthController
     }
 
     public function proyek()
-{
-    return view('proyek.index');
-}
+    {
+        return view('proyek.index');
+    }
 
-public function keterangan()
-{
-    return view('keterangan.index');
-}
+    public function keterangan()
+    {
+        return view('keterangan.index');
+    }
 
-public function aktivitas()
-{
-    return view('aktivitas.index');
-}
+    public function aktivitas()
+    {
+        return view('aktivitas.index');
+    }
 
-public function ModeJamKerja()
-{
-    return view('mode-jam-kerja.index');
-}
+    public function ModeJamKerja()
+    {
+        return view('mode-jam-kerja.index');
+    }
 
-public function StatusJamKerja()
-{
-    return view('status-jam-kerja.index');
-}
+    public function StatusJamKerja()
+    {
+        return view('status-jam-kerja.index');
+    }
+
+    public function showRegisterForm()
+    {
+        return view('auth.register');
+    }
+
+    public function progresKerja()
+    {
+        return view('progres-kerja.index');
+    }
 
     public function uploadFoto(Request $request)
-{
-    if ($request->hasFile('foto')) {
-        $file = $request->file('foto');
-        if ($file->isValid() && str_starts_with($file->getMimeType(), 'image/')) {
-            $path = $file->store('public/foto'); 
-            $url = Storage::url($path); 
-            return response()->json(['url' => $url]);
+    {
+        if ($request->hasFile('foto')) {
+            $file = $request->file('foto');
+            if ($file->isValid() && str_starts_with($file->getMimeType(), 'image/')) {
+                $path = $file->store('public/foto'); 
+                $url = Storage::url($path); 
+                return response()->json(['url' => $url]);
+            }
         }
+        return response()->json(['error' => 'File tidak valid atau bukan gambar'], 400);
     }
-    return response()->json(['error' => 'File tidak valid atau bukan gambar'], 400);
-}
-
-    
-
-    
-
 
     public function logout(Request $request)
     {
@@ -113,6 +120,5 @@ public function StatusJamKerja()
         $request->session()->regenerateToken();
 
         return redirect('/login');
+    }
 }
-}
-

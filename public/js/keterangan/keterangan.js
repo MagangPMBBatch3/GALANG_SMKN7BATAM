@@ -192,7 +192,6 @@ async function loadSelectOptions() {
         });
     });
 
-    // Fetch Proyek
     const queryProyek = `
         query {
             allProyeks {

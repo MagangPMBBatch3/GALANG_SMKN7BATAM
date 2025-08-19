@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Hash;
 
 
 class User extends Authenticatable
@@ -51,7 +52,7 @@ class User extends Authenticatable
         return [
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
-            'password' => 'hashed',
+            
             'deleted_at' => 'datetime',
         ];
     }
@@ -60,4 +61,11 @@ class User extends Authenticatable
     {
         return $this->hasOne('App\Models\UserProfile\UserProfile', 'user_id');
     }
+    
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = Hash::make($value);
+    }   
+
+    
 }

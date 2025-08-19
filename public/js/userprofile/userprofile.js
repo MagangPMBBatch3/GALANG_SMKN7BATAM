@@ -1,4 +1,3 @@
-
 async function loadUserProfileData() {
     const query = `
         query {
@@ -46,51 +45,72 @@ function renderUserProfile(profile) {
     const noDataMessage = document.getElementById('noDataMessage');
     const editButton = document.getElementById('editProfileButton');
 
+    const dashboardFoto = document.getElementById('userProfileFoto');
+    const dashboardNama = document.getElementById('userProfileNamaLengkap');
+
     if (!profile) {
-        container.classList.add('hidden');
-        noDataMessage.classList.remove('hidden');
-        editButton.classList.add('hidden');
+        if (container && noDataMessage && editButton) {
+            container.classList.add('hidden');
+            noDataMessage.classList.remove('hidden');
+            editButton.classList.add('hidden');
+        }
+        if (dashboardFoto && dashboardNama) {
+            dashboardFoto.classList.add('hidden');
+            dashboardNama.textContent = 'User';
+        }
         return;
     }
 
-    container.classList.remove('hidden');
-    noDataMessage.classList.add('hidden');
-    editButton.classList.remove('hidden');
+    if (container && noDataMessage && editButton) {
+        container.classList.remove('hidden');
+        noDataMessage.classList.add('hidden');
+        editButton.classList.remove('hidden');
 
-    document.getElementById('userProfileId').textContent = profile.id || '-';
-    document.getElementById('userProfileNamaLengkap').textContent = profile.nama_lengkap || '-';
-    document.getElementById('userProfileEmail').textContent = profile.user?.email || '-';
-    document.getElementById('userProfileNrp').textContent = profile.nrp || '-';
-    document.getElementById('userProfileAlamat').textContent = profile.alamat || '-';
-    document.getElementById('userProfileLevel').textContent = profile.level?.nama || '-';
-    document.getElementById('userProfileStatus').textContent = profile.status?.nama || '-';
-    document.getElementById('userProfileBagian').textContent = profile.bagian?.nama || '-';
+        document.getElementById('userProfileId').textContent = profile.id || '-';
+        document.getElementById('userProfileNamaLengkap').textContent = profile.nama_lengkap || '-';
+        document.getElementById('userProfileEmail').textContent = profile.user?.email || '-';
+        document.getElementById('userProfileNrp').textContent = profile.nrp || '-';
+        document.getElementById('userProfileAlamat').textContent = profile.alamat || '-';
+        document.getElementById('userProfileLevel').textContent = profile.level?.nama || '-';
+        document.getElementById('userProfileStatus').textContent = profile.status?.nama || '-';
+        document.getElementById('userProfileBagian').textContent = profile.bagian?.nama || '-';
 
-    const fotoElement = document.getElementById('userProfileFoto');
-    if (profile.foto) {
-        fotoElement.src = profile.foto;
-        fotoElement.classList.remove('hidden');
-    } else {
-        fotoElement.classList.add('hidden');
+        const fotoElement = document.getElementById('userProfileFoto');
+        if (fotoElement) {
+            if (profile.foto) {
+                fotoElement.src = profile.foto;
+                fotoElement.classList.remove('hidden');
+            } else {
+                fotoElement.classList.add('hidden');
+            }
+        }
+
+        editButton.dataset.profile = JSON.stringify({
+            id: profile.id || '',
+            user_id: profile.user_id || '',
+            nama_lengkap: profile.nama_lengkap || '',
+            nrp: profile.nrp || '',
+            alamat: profile.alamat || '',
+            foto: profile.foto || '',
+            bagian_id: profile.bagian_id || '',
+            level_id: profile.level_id || '',
+            status_id: profile.status_id || ''
+        }, (key, value) => (value === null ? '' : value));
     }
 
-    // Store profile data for edit modal, ensuring safe JSON stringification
-    editButton.dataset.profile = JSON.stringify({
-        id: profile.id || '',
-        user_id: profile.user_id || '',
-        nama_lengkap: profile.nama_lengkap || '',
-        nrp: profile.nrp || '',
-        alamat: profile.alamat || '',
-        foto: profile.foto || '',
-        bagian_id: profile.bagian_id || '',
-        level_id: profile.level_id || '',
-        status_id: profile.status_id || ''
-    }, (key, value) => (value === null ? '' : value));
+    if (dashboardFoto && dashboardNama) {
+        if (profile.foto) {
+            dashboardFoto.src = profile.foto;
+            dashboardFoto.classList.remove('hidden');
+        } else {
+            dashboardFoto.classList.add('hidden');
+        }
+        dashboardNama.textContent = profile.nama_lengkap || 'User';
+    }
 }
 
 async function loadSelectOptions() {
     try {
-        // Fetch users
         const userRes = await fetch('/graphql', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -107,7 +127,6 @@ async function loadSelectOptions() {
                 users.map(u => `<option value="${u.id}">${u.name} (${u.email})</option>`).join('');
         }
 
-        // Fetch levels
         const levelRes = await fetch('/graphql', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -124,7 +143,6 @@ async function loadSelectOptions() {
                 levels.map(l => `<option value="${l.id}">${l.nama}</option>`).join('');
         }
 
-        // Fetch statuses
         const statusRes = await fetch('/graphql', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -141,7 +159,6 @@ async function loadSelectOptions() {
                 statuses.map(s => `<option value="${s.id}">${s.nama}</option>`).join('');
         }
 
-        // Fetch bagians
         const bagianRes = await fetch('/graphql', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -189,26 +206,21 @@ function openEditUserProfileModal() {
         return;
     }
 
-    // Open modal and populate fields after loading select options
     loadSelectOptions().then(() => {
-        // Log to verify modal elements
         console.log('Populating modal fields...');
 
-        // Set hidden ID field
         const idInput = document.getElementById('editUserProfileId');
         if (idInput) {
             idInput.value = profile.id || '';
             console.log('Set editUserProfileId:', idInput.value);
         }
 
-        // Set user dropdown
         const userSelect = document.getElementById('editUserProfileUserId');
         if (userSelect) {
             userSelect.value = profile.user_id || '';
             console.log('Set editUserProfileUserId:', userSelect.value);
         }
 
-        // Set text inputs
         const namaLengkapInput = document.getElementById('editUserProfileNamaLengkap');
         if (namaLengkapInput) {
             namaLengkapInput.value = profile.nama_lengkap || '';
@@ -227,7 +239,6 @@ function openEditUserProfileModal() {
             console.log('Set editUserProfileAlamat:', alamatInput.value);
         }
 
-        // Set dropdowns
         const bagianSelect = document.getElementById('editUserProfileBagianId');
         if (bagianSelect) {
             bagianSelect.value = profile.bagian_id || '';
@@ -246,7 +257,6 @@ function openEditUserProfileModal() {
             console.log('Set editUserProfileStatusId:', statusSelect.value);
         }
 
-        // Set photo preview
         const existingFotoInput = document.getElementById('editUserProfileFotoExisting');
         const preview = document.getElementById('editUserProfileFotoPreview');
         if (existingFotoInput && preview) {
@@ -263,7 +273,6 @@ function openEditUserProfileModal() {
             }
         }
 
-        // Show the modal
         const modal = document.getElementById('modalEditUserProfile');
         if (modal) {
             modal.classList.remove('hidden');
@@ -280,4 +289,4 @@ function openEditUserProfileModal() {
 
 document.addEventListener('DOMContentLoaded', () => {
     loadUserProfileData();
-});
+}); 
