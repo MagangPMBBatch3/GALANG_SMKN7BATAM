@@ -2,7 +2,6 @@
     <div class="bg-white p-4 rounded shadow w-full">
         <h1 class="text-2xl font-bold mb-4">Data Status</h1>
 
-        {{-- Tombol Tambah & Pencarian --}}
         <div class="flex justify-between mb-4">
             <input type="text" id="searchStatus" placeholder="Cari ID atau Nama..." class="border p-2 rounded w-64" oninput="searchStatus()">
             <button onclick="openAddStatusModal()" class="bg-blue-500 text-white px-4 py-2 rounded">
@@ -10,7 +9,6 @@
             </button>
         </div>
 
-        {{-- Tabs Aktif / Arsip --}}
         <div class="mb-4">
             <button onclick="showTab('aktif')" id="tabAktif" class="px-4 py-2 bg-blue-500 text-white rounded-t">
                 Data Aktif
@@ -20,7 +18,6 @@
             </button>
         </div>
 
-        {{-- Tabel Data Aktif --}}
         <div id="tableAktif">
             <table class="w-full border">
                 <thead class="bg-gray-200">
@@ -34,7 +31,6 @@
             </table>
         </div>
 
-        {{-- Tabel Data Arsip --}}
         <div id="tableArsip" class="hidden">
             <table class="w-full border">
                 <thead class="bg-gray-200">
@@ -48,13 +44,10 @@
             </table>
         </div>
     </div>
-    {{-- Include Modal Tambah --}}
 @include('components.status.modal-add')
 
-{{-- Include Modal Edit --}}
 @include('components.status.modal-edit')
 
-{{-- Script --}}
 <script src="{{ asset('js/status/status.js') }}"></script>
 <script src="{{ asset('js/status/status-create.js') }}"></script>
 <script src="{{ asset('js/status/status-edit.js') }}"></script>

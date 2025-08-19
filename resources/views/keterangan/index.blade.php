@@ -2,7 +2,6 @@
     <div class="bg-white p-4 rounded shadow w-full">
         <h1 class="text-2xl font-bold mb-4">Data Keterangan</h1>
 
-        {{-- Tombol Tambah & Pencarian --}}
         <div class="flex justify-between mb-4">
             <input type="text" id="searchKeterangan" name="searchKeterangan" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Cari Bagian atau Proyek..." class="border p-2 rounded w-64" oninput="searchKeterangan()">
             <button onclick="openAddKeteranganModal()" class="bg-blue-500 text-white px-4 py-2 rounded">
@@ -10,7 +9,6 @@
             </button>
         </div>
 
-        {{-- Tabs Aktif / Arsip --}}
         <div class="mb-4">
             <button onclick="showTabKeterangan('aktif')" id="tabAktifKeterangan" class="px-4 py-2 bg-blue-500 text-white rounded-t">
                 Data Aktif
@@ -20,7 +18,6 @@
             </button>
         </div>
 
-        {{-- Tabel Data Aktif --}}
         <div id="tableAktifKeterangan">
             <table class="w-full border">
                 <thead class="bg-gray-200">
@@ -36,7 +33,6 @@
             </table>
         </div>
 
-        {{-- Tabel Data Arsip --}}
         <div id="tableArsipKeterangan" class="hidden">
             <table class="w-full border">
                 <thead class="bg-gray-200">
@@ -53,13 +49,10 @@
         </div>
     </div>
 
-    {{-- Include Modal Tambah --}}
     @include('components.keterangan.modal-add')
 
-    {{-- Include Modal Edit --}}
     @include('components.keterangan.modal-edit')
 
-    {{-- Script --}}
     <script src="{{ asset('js/keterangan/keterangan.js') }}"></script>
     <script src="{{ asset('js/keterangan/keterangan-create.js') }}"></script>
     <script src="{{ asset('js/keterangan/keterangan-edit.js') }}"></script>

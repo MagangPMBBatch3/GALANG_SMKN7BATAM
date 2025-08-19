@@ -2,7 +2,6 @@
     <div class="bg-white p-4 rounded shadow w-full">
         <h1 class="text-2xl font-bold mb-4">Data User</h1>
 
-        {{-- Tombol Tambah & Pencarian --}}
         <div class="flex justify-between mb-4">
             <input type="text" id="searchUser" name="searchUser" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Cari ID, Namal..." class="border p-2 rounded w-64" oninput="searchUser()">
             <button onclick="openAddUserModal()" class="bg-blue-500 text-white px-4 py-2 rounded">
@@ -10,7 +9,6 @@
             </button>
         </div>
 
-        {{-- Tabs Aktif / Arsip --}}
         <div class="mb-4">
             <button onclick="showTabUser('aktif')" id="tabAktifUser" class="px-4 py-2 bg-blue-500 text-white rounded-t">
                 Data Aktif
@@ -20,7 +18,6 @@
             </button>
         </div>
 
-        {{-- Tabel Data Aktif --}}
         <div id="tableAktifUser">
             <table class="w-full border">
                 <thead class="bg-gray-200">
@@ -35,7 +32,6 @@
             </table>
         </div>
 
-        {{-- Tabel Data Arsip --}}
         <div id="tableArsipUser" class="hidden">
             <table class="w-full border">
                 <thead class="bg-gray-200">
@@ -50,13 +46,10 @@
             </table>
         </div>
     </div>
-    {{-- Include Modal Tambah --}}
     @include('components.user.modal-add')
 
-    {{-- Include Modal Edit --}}
     @include('components.user.modal-edit')
 
-    {{-- Script --}}
     <script src="{{ asset('js/user/user.js') }}"></script>
     <script src="{{ asset('js/user/user-create.js') }}"></script>
     <script src="{{ asset('js/user/user-edit.js') }}"></script>
