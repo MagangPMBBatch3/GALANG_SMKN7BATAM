@@ -1,7 +1,6 @@
 <x-layouts.main title="Pesan">
     <div class="container mx-auto h-screen flex flex-col bg-gray-50">
         <div class="flex flex-1 overflow-hidden">
-            <!-- Sidebar: Conversation List -->
             <div class="w-1/3 bg-white shadow-md border-r border-gray-200 overflow-y-auto">
                 <div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-4 text-white sticky top-0 z-10">
                     <h1 class="text-2xl font-bold">Pesan</h1>
@@ -10,17 +9,14 @@
                     </button>
                 </div>
                 <div id="conversationList" class="divide-y divide-gray-100">
-                    <!-- Conversations populated by JS -->
                 </div>
             </div>
-            <!-- Main Chat Area -->
             <div class="w-2/3 flex flex-col bg-white">
                 <div id="chatHeader" class="bg-white p-4 border-b border-gray-200 flex items-center shadow-sm">
                     <h2 class="text-lg font-semibold text-gray-800">Pilih Penerima untuk Memulai</h2>
                 </div>
                 <div id="chatMessages" class="flex-1 p-6 overflow-y-auto relative bg-gray-50">
                     <div id="loadingIndicator" class="hidden text-center text-gray-500 p-4">Memuat pesan...</div>
-                    <!-- Messages populated by JS -->
                 </div>
                 <div class="p-4 border-t border-gray-200 bg-white">
                     <form id="sendMessageForm" class="flex space-x-3 items-center">
@@ -38,7 +34,6 @@
         </div>
     </div>
 
-    <!-- Add Pesan Modal -->
     <div id="addPesanModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
         <div class="relative top-20 mx-auto p-6 border w-11/12 md:w-3/4 lg:w-1/2 shadow-xl rounded-xl bg-white">
             <div class="mt-3">
@@ -75,7 +70,6 @@
         </div>
     </div>
 
-    <script src="{{ asset('js/pesan/realtime.js') }}"></script>
 
 
     <script src="{{ asset('js/pesan/pesan.js') }}"></script>

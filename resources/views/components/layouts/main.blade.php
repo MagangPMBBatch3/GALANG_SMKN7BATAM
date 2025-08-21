@@ -61,6 +61,7 @@
                     <li><a href="{{ route('keterangan') }}" class="block p-2 rounded-lg text-white hover:bg-blue-500 flex items-center gap-3"><i class="fas fa-info-circle"></i> Keterangan</a></li>
                     <li><a href="{{ route('user') }}" class="block p-2 rounded-lg text-white hover:bg-blue-500 flex items-center gap-3"><i class="fas fa-users"></i> User</a></li>
                     <li><a href="{{ route('status') }}" class="block p-2 rounded-lg text-white hover:bg-blue-500 flex items-center gap-3"><i class="fas fa-info"></i> Status</a></li>
+                    <li><a href="{{ route('jenis.pesan') }}" class="block p-2 rounded-lg text-white hover:bg-blue-500 flex items-center gap-3"><i class="fas fa-envelope-open-text"></i> Jenis Pesan</a></li>
                     <li><a href="{{ route('mode.jam.kerja') }}" class="block p-2 rounded-lg text-white hover:bg-blue-500 flex items-center gap-3"><i class="fas fa-clock"></i> Mode Jam Kerja</a></li>
                     <li><a href="{{ route('status.jam.kerja') }}" class="block p-2 rounded-lg text-white hover:bg-blue-500 flex items-center gap-3"><i class="fas fa-check-circle"></i> Status Jam Kerja</a></li>
                 </ul>

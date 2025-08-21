@@ -110,6 +110,11 @@ class AuthController
         return view('pesan.index');
     }
 
+    public function jenisPesan()
+    {
+        return view('jenis-pesan.index');
+    }
+
     public function uploadFoto(Request $request)
     {
         if ($request->hasFile('foto')) {

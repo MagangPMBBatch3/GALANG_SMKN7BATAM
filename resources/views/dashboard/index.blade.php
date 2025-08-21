@@ -164,7 +164,7 @@
             </div>
         </div>
     </div>
- @if(auth()->user()->level_id === 4)
+@if(auth()->user()->level->nama === 'Admin')
     <div class="bg-white rounded-xl shadow-lg p-6">
         <h3 class="text-xl font-semibold text-gray-900 mb-4">Aksi Cepat</h3>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">

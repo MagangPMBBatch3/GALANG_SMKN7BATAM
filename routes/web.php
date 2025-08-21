@@ -35,6 +35,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/progresKerja', [AuthController::class, 'progresKerja'])->name('progres.kerja');
     Route::get('/lembur', [AuthController::class, 'lembur'])->name('lembur');
     Route::get('/pesan', [AuthController::class, 'pesan'])->name('pesan');
+    Route::get('/jenisPesan', [AuthController::class, 'jenisPesan'])->name('jenis.pesan');
 
     Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
     Route::post('/profile', [AuthController::class, 'updateProfile'])->name('profile.update');

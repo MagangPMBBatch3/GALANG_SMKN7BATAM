@@ -1,4 +1,3 @@
-<!-- Modal Tambah Lembur -->
 <div id="addLemburModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
     <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
         <h2 class="text-xl font-bold mb-4">Tambah Lembur</h2>
