@@ -33,7 +33,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/ModeJamKerja', [AuthController::class, 'ModeJamKerja'])->name('mode.jam.kerja');
     Route::get('/StatusJamKerja', [AuthController::class, 'StatusJamKerja'])->name('status.jam.kerja');
     Route::get('/progresKerja', [AuthController::class, 'progresKerja'])->name('progres.kerja');
-
+    Route::get('/lembur', [AuthController::class, 'lembur'])->name('lembur');
+    Route::get('/pesan', [AuthController::class, 'pesan'])->name('pesan');
 
     Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
     Route::post('/profile', [AuthController::class, 'updateProfile'])->name('profile.update');

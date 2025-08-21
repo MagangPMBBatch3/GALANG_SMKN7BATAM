@@ -1,3 +1,5 @@
+const { useInsertionEffect } = require("react");
+
 function openEditKeteranganModal(id, bagian_id, proyek_id, tanggal) {
     loadSelectOptions().then(() => {
         document.getElementById('editKeteranganId').value = id;
@@ -22,6 +24,8 @@ async function updateKeterangan() {
         alert('Tanggal wajib diisi!');
         return;
     }
+
+
 
     const mutation = `
         mutation {

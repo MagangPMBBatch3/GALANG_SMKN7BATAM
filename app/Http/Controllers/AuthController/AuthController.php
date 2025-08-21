@@ -100,6 +100,16 @@ class AuthController
         return view('progres-kerja.index');
     }
 
+    public function lembur()
+    {
+        return view('lembur.index');
+    }
+
+    public function pesan()
+    {
+        return view('pesan.index');
+    }
+
     public function uploadFoto(Request $request)
     {
         if ($request->hasFile('foto')) {
@@ -121,4 +131,6 @@ class AuthController
 
         return redirect('/login');
     }
+
+    
 }

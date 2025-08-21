@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('pesan', function (Blueprint $table) {
             $table->id();
-            $table->string('pengirim', 100)->nullable();
-            $table->string('penerima', 100)->nullable();
+            $table->foreignId('pengirim_id')->nullable()->constrained('user_profile')->onUpdate('cascade')->nullOnDelete();
+            $table->foreignId('penerima_id')->nullable()->constrained('user_profile')->onUpdate('cascade')->nullOnDelete();
             $table->text('isi')->nullable();
             $table->integer('parent_id')->nullable();
             $table->dateTime('tgl_pesan')->nullable();

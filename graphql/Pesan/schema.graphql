@@ -1,7 +1,9 @@
+
+
 type Pesan {
     id: ID!
-    pengirim: String
-    penerima: String
+    pengirim: UserProfile @belongsTo
+    penerima: UserProfile @belongsTo
     isi: String
     parent_id: Int
     tgl_pesan: DateTime
@@ -9,13 +11,20 @@ type Pesan {
     created_at: DateTime
     updated_at: DateTime
     deleted_at: DateTime
-
     jenis: JenisPesan @belongsTo
 }
 
+type JenisPesan {
+    id: ID!
+    nama: String
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at: DateTime
+}
+
 input CreatePesanInput {
-    pengirim: String
-    penerima: String
+    pengirim_id: ID
+    penerima_id: ID
     isi: String
     parent_id: Int
     tgl_pesan: DateTime
@@ -23,14 +32,13 @@ input CreatePesanInput {
 }
 
 input UpdatePesanInput {
-    pengirim: String
-    penerima: String
+    pengirim_id: ID
+    penerima_id: ID
     isi: String
     parent_id: Int
     tgl_pesan: DateTime
     jenis_id: ID
 }
-
 
 extend type Query {
     allPesan: [Pesan!]!
@@ -39,8 +47,13 @@ extend type Query {
     pesan(id: ID! @eq): Pesan
     @find(model: "App\\Models\\Pesan\\Pesan")
 
-    pesansByUserProfile(user_profile_id: ID! @where(operator: "like", key: "user_profile_id")): [Pesan!]!
-    @all(model: "App\\Models\\Pesan\\Pesan")
+    pesansByUserProfile(user_profile_id: ID!): [Pesan!]!
+    @field(resolver: "App\\GraphQL\\Pesan\\Queries\\PesanQuery@pesansByUserProfile")
+
+   
+
+    allUserProfiles: [UserProfile!]!
+    @all(model: "App\\Models\\UserProfile\\UserProfile")
 }
 
 extend type Mutation {
@@ -58,4 +71,9 @@ extend type Mutation {
 
     forceDeletePesan(id: ID!): Pesan
     @field(resolver: "App\\GraphQL\\Pesan\\Mutations\\PesanMutation@forceDelete")
+}
+
+extend type Subscription {
+    messageCreated(user_profile_id: ID!): Pesan
+    @field(resolver: "App\\GraphQL\\Pesan\\Subscriptions\\PesanSubscription@messageCreated")
 }

@@ -1,11 +1,11 @@
 async function loadUserData() {
-  
     const queryAktif = `
         query {
             allUser {
                 id
                 name
                 email
+                level { nama }
             }
         }
     `;
@@ -17,13 +17,13 @@ async function loadUserData() {
     const dataAktif = await resAktif.json();
     renderUserTable(dataAktif?.data?.allUser || [], 'dataUser', true);
 
-    
     const queryArsip = `
         query {
             allUserArsip {
                 id
                 name
                 email
+                level { nama }
                 deleted_at
             }
         }
@@ -47,52 +47,54 @@ async function searchUser() {
     let query = '';
     if (!isNaN(keyword)) {
         query = `
-            query {
-                user(id: ${keyword}) {
+            query user($id: ID!) {
+                user(id: $id) {
                     id
                     name
                     email
+                    level { nama }
                 }
             }
         `;
         const res = await fetch('/graphql', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ query })
+            body: JSON.stringify({ query, variables: { id: parseInt(keyword) } })
         });
         const data = await res.json();
         renderUserTable(data.data.user ? [data.data.user] : [], 'dataUser', true);
     } else {
         query = `
-            query {
-                userByNama(name: "%${keyword}%") {
+            query userByEmail($email: String!) {
+                userByEmail(email: $email) {
                     id
                     name
                     email
+                    level { nama }
                 }
             }
         `;
         const res = await fetch('/graphql', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ query })
+            body: JSON.stringify({ query, variables: { email: `%${keyword}%` } })
         });
         const data = await res.json();
-        renderUserTable(data.data.userByNama, 'dataUser', true);
+        renderUserTable(data.data.userByEmail || [], 'dataUser', true);
     }
 }
 
 async function forceDeleteUser(id) {
     if (!confirm('Hapus permanen? Data tidak bisa dikembalikan!')) return;
     const mutation = `
-        mutation {
-            forceDeleteUser(id: ${id}) { id }
+        mutation forceDeleteUser($id: ID!) {
+            forceDeleteUser(id: $id) { id }
         }
     `;
     await fetch('/graphql', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: mutation })
+        body: JSON.stringify({ query: mutation, variables: { id: parseInt(id) } })
     });
     loadUserData();
 }
@@ -100,14 +102,14 @@ async function forceDeleteUser(id) {
 async function archiveUser(id) {
     if (!confirm('Pindahkan ke arsip?')) return;
     const mutation = `
-        mutation {
-            deleteUser(id: ${id}) { id }
+        mutation deleteUser($id: ID!) {
+            deleteUser(id: $id) { id }
         }
     `;
     await fetch('/graphql', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: mutation })
+        body: JSON.stringify({ query: mutation, variables: { id: parseInt(id) } })
     });
     loadUserData();
 }
@@ -115,14 +117,14 @@ async function archiveUser(id) {
 async function restoreUser(id) {
     if (!confirm('Kembalikan dari arsip?')) return;
     const mutation = `
-        mutation {
-            restoreUser(id: ${id}) { id }
+        mutation restoreUser($id: ID!) {
+            restoreUser(id: $id) { id }
         }
     `;
     await fetch('/graphql', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: mutation })
+        body: JSON.stringify({ query: mutation, variables: { id: parseInt(id) } })
     });
     loadUserData();
 }
@@ -130,6 +132,7 @@ async function restoreUser(id) {
 function openAddUserModal() {
     document.getElementById('modalAddUser').classList.remove('hidden');
 }
+
 function closeAddUserModal() {
     document.getElementById('modalAddUser').classList.add('hidden');
 }
@@ -141,7 +144,7 @@ function renderUserTable(users, tableId, isActive) {
     if (!users.length) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="4" class="text-center text-gray-500 p-3">Tidak ada data</td>
+                <td colspan="5" class="text-center text-gray-500 p-3">Tidak ada data</td>
             </tr>
         `;
         return;
@@ -151,7 +154,7 @@ function renderUserTable(users, tableId, isActive) {
         let actions = '';
         if (isActive) {
             actions = `
-                <button onclick="openEditUserModal(${item.id}, '${item.name}', '${item.email}')" class="bg-yellow-500 text-white px-2 py-1 rounded">Edit</button>
+                <button onclick="openEditUserModal(${item.id}, '${item.name}', '${item.email}', ${item.level?.id || 7})" class="bg-yellow-500 text-white px-2 py-1 rounded">Edit</button>
                 <button onclick="archiveUser(${item.id})" class="bg-red-500 text-white px-2 py-1 rounded">Arsipkan</button>
             `;
         } else {
@@ -166,6 +169,7 @@ function renderUserTable(users, tableId, isActive) {
                 <td class="border p-2">${item.id}</td>
                 <td class="border p-2">${item.name}</td>
                 <td class="border p-2">${item.email}</td>
+                <td class="border p-2">${item.level?.nama || 'User'}</td>
                 <td class="border p-2">${actions}</td>
             </tr>
         `;
@@ -174,7 +178,6 @@ function renderUserTable(users, tableId, isActive) {
 
 document.addEventListener('DOMContentLoaded', () => {
     loadUserData();
-
     document.getElementById('searchUser').addEventListener('input', debounce(searchUser, 300));
 });
 

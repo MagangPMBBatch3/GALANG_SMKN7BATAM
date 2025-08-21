@@ -13,7 +13,7 @@ function getCsrfToken() {
     return meta.getAttribute('content');
 }
 
-async function loadProgresData(page = 1, filters = {}) {
+async function loadLemburData(page = 1, filters = {}) {
     try {
         const query = buildQuery(page, filters);
         const response = await fetch('/graphql', {
@@ -26,23 +26,23 @@ async function loadProgresData(page = 1, filters = {}) {
         });
 
         const result = await response.json();
-        console.log('GraphQL response (loadProgresData):', result);
+        console.log('GraphQL response (loadLemburData):', result);
         if (result.errors) {
             throw new Error(result.errors.map(e => e.message).join(', '));
         }
 
         if (result.data) {
-            let data = userLevelName === 'Admin' ? result.data.allJamKerja || [] : result.data.jamKerjasByUserProfile || [];
+            let data = userLevelName === 'Admin' ? result.data.allLembur || [] : result.data.lembursByUserProfile || [];
             data = applyClientSideFilters(data, filters);
             const start = (page - 1) * ITEMS_PER_PAGE;
             const paginatedData = data.slice(start, start + ITEMS_PER_PAGE);
-            renderProgressTable(paginatedData);
+            renderLemburTable(paginatedData);
             updateSummary(data);
             updatePagination(data.length, page);
         }
     } catch (error) {
-        console.error('Error loading progress data:', error);
-        showError('Gagal memuat data progress kerja: ' + error.message);
+        console.error('Error loading lembur data:', error);
+        showError('Gagal memuat data lembur: ' + error.message);
     }
 }
 
@@ -55,9 +55,6 @@ function applyClientSideFilters(data, filters) {
         if (filters.proyek_id && parseInt(filters.proyek_id) !== (item.proyek?.id ? parseInt(item.proyek.id) : null)) {
             matches = false;
         }
-        if (filters.status_id && parseInt(filters.status_id) !== (item.status?.id ? parseInt(item.status.id) : null)) {
-            matches = false;
-        }
         return matches;
     });
 }
@@ -66,27 +63,13 @@ function buildQuery(page, filters) {
     if (userLevelName === 'Admin') {
         return `
             query {
-                allJamKerja {
+                allLembur {
                     id
                     tanggal
-                    jumlah_jam
-                    keterangan
                     proyek {
                         id
                         nama
                         kode
-                    }
-                    aktivitas {
-                        id
-                        nama
-                    }
-                    status {
-                        id
-                        nama
-                    }
-                    mode {
-                        id
-                        nama
                     }
                     userprofile {
                         id
@@ -100,27 +83,13 @@ function buildQuery(page, filters) {
     } else {
         return `
             query {
-                jamKerjasByUserProfile(user_profile_id: ${parseInt(userProfileId)}) {
+                lembursByUserProfile(user_profile_id: ${parseInt(userProfileId)}) {
                     id
                     tanggal
-                    jumlah_jam
-                    keterangan
                     proyek {
                         id
                         nama
                         kode
-                    }
-                    aktivitas {
-                        id
-                        nama
-                    }
-                    status {
-                        id
-                        nama
-                    }
-                    mode {
-                        id
-                        nama
                     }
                     userprofile {
                         id
@@ -134,13 +103,12 @@ function buildQuery(page, filters) {
     }
 }
 
-function renderProgressTable(data) {
-    const tbody = document.getElementById('progressTableBody');
-    const isAdmin = userLevelName === 'Admin';
+function renderLemburTable(data) {
+    const tbody = document.getElementById('lemburTableBody');
     tbody.innerHTML = data.length ? '' : `
         <tr>
-            <td colspan="${isAdmin ? 8 : 7}" class="px-6 py-4 text-center text-gray-500">
-                Tidak ada data progress kerja
+            <td colspan="4" class="px-6 py-4 text-center text-gray-500">
+                Tidak ada data lembur
             </td>
         </tr>
     `;
@@ -150,18 +118,10 @@ function renderProgressTable(data) {
             <tr>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${formatDate(item.tanggal)}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.proyek?.nama || '-'}</td>
-                ${isAdmin ? `<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.userprofile?.nama_lengkap || '-'}</td>` : ''}
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.aktivitas?.nama || '-'}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.jumlah_jam} jam</td>
-                <td class="px-6 py-4 text-sm text-gray-900">${item.keterangan || '-'}</td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(item.status?.id)}">
-                        ${item.status?.nama || '-'}
-                    </span>
-                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.userprofile?.nama_lengkap || '-'}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <button onclick="editProgress(${item.id})" class="text-indigo-600 hover:text-indigo-900 mr-2">Edit</button>
-                    <button onclick="deleteProgress(${item.id})" class="text-red-600 hover:text-red-900">Hapus</button>
+                    <button onclick="editLembur(${item.id})" class="text-indigo-600 hover:text-indigo-900 mr-2">Edit</button>
+                    <button onclick="deleteLembur(${item.id})" class="text-red-600 hover:text-red-900">Hapus</button>
                 </td>
             </tr>
         `;
@@ -169,32 +129,17 @@ function renderProgressTable(data) {
 }
 
 function updateSummary(data) {
-    const totalJam = data.reduce((sum, item) => sum + parseFloat(item.jumlah_jam || 0), 0);
     const today = new Date().toISOString().split('T')[0];
-    const todayProgress = data.filter(item => {
+    const todayLembur = data.filter(item => {
         const itemDate = new Date(item.tanggal).toISOString().split('T')[0];
         return itemDate === today;
     }).length;
-    const completed = data.filter(item => parseInt(item.status?.id) === 1).length;
-    const percentage = data.length > 0 ? Math.round((completed / data.length) * 100) : 0;
+    const totalLembur = data.length;
+    const proyekAktif = new Set(data.map(item => item.proyek?.id).filter(Boolean)).size;
 
-    console.log('Total entries:', data.length, 'Completed:', completed, 'Percentage:', percentage);
-
-    document.getElementById('totalJam').textContent = totalJam.toFixed(1);
-    document.getElementById('proyekAktif').textContent = new Set(data.map(item => item.proyek?.id).filter(Boolean)).size;
-    document.getElementById('progressHariIni').textContent = todayProgress;
-    document.getElementById('persentaseSelesai').textContent = percentage + '%';
-}
-
-function getStatusColor(statusId) {
-    const colors = {
-        1: 'bg-green-100 text-green-800',
-        2: 'bg-red-100 text-red-800',
-        3: 'bg-yellow-100 text-yellow-800',
-        4: 'bg-green-100 text-green-800',
-        5: 'bg-red-100 text-red-800'
-    };
-    return colors[statusId] || 'bg-gray-100 text-gray-800';
+    document.getElementById('totalLembur').textContent = totalLembur;
+    document.getElementById('proyekAktif').textContent = proyekAktif;
+    document.getElementById('lemburHariIni').textContent = todayLembur;
 }
 
 function formatDate(dateString) {
@@ -208,49 +153,25 @@ function formatDate(dateString) {
 async function loadDropdownData() {
     try {
         const proyekQuery = `query { allProyeks { id nama kode } }`;
-        const aktivitasQuery = `query { allAktivitas { id nama } }`;
-        const statusQuery = `query { allStatusJamKerja { id nama deleted_at } }`;
-        const modeQuery = `query { allModeJamKerja { id nama deleted_at } }`;
+        const response = await fetch('/graphql', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': getCsrfToken()
+            },
+            body: JSON.stringify({ query: proyekQuery })
+        });
 
-        const [proyekResponse, aktivitasResponse, statusResponse, modeResponse] = await Promise.all([
-            fetch('/graphql', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': getCsrfToken() }, body: JSON.stringify({ query: proyekQuery }) }),
-            fetch('/graphql', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': getCsrfToken() }, body: JSON.stringify({ query: aktivitasQuery }) }),
-            fetch('/graphql', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': getCsrfToken() }, body: JSON.stringify({ query: statusQuery }) }),
-            fetch('/graphql', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': getCsrfToken() }, body: JSON.stringify({ query: modeQuery }) })
-        ]);
-
-        const proyekData = await proyekResponse.json();
-        const aktivitasData = await aktivitasResponse.json();
-        const statusData = await statusResponse.json();
-        const modeData = await modeResponse.json();
-
+        const proyekData = await response.json();
         console.log('Proyek data:', proyekData.data?.allProyeks);
-        console.log('Aktivitas data:', aktivitasData.data?.allAktivitas);
-        console.log('Status data:', statusData.data?.allStatusJamKerja);
-        console.log('Mode data:', modeData.data?.allModeJamKerja);
 
-        if (proyekData.errors || aktivitasData.errors || statusData.errors || modeData.errors) {
-            throw new Error('Gagal memuat data dropdown: ' + [
-                ...(proyekData.errors?.map(e => e.message) || []),
-                ...(aktivitasData.errors?.map(e => e.message) || []),
-                ...(statusData.errors?.map(e => e.message) || []),
-                ...(modeData.errors?.map(e => e.message) || [])
-            ].join(', '));
+        if (proyekData.errors) {
+            throw new Error(proyekData.errors.map(e => e.message).join(', '));
         }
-
-        const activeStatuses = statusData.data.allStatusJamKerja.filter(status => !status.deleted_at);
-        const activeModes = modeData.data.allModeJamKerja.filter(mode => !mode.deleted_at);
 
         populateDropdown('filterProyek', proyekData.data.allProyeks, 'id', 'nama', 'Semua Proyek');
         populateDropdown('addProyek', proyekData.data.allProyeks, 'id', 'nama', 'Pilih Proyek');
         populateDropdown('editProyek', proyekData.data.allProyeks, 'id', 'nama', 'Pilih Proyek');
-        populateDropdown('addAktivitas', aktivitasData.data.allAktivitas, 'id', 'nama', 'Pilih Aktivitas');
-        populateDropdown('editAktivitas', aktivitasData.data.allAktivitas, 'id', 'nama', 'Pilih Aktivitas');
-        populateDropdown('filterStatus', activeStatuses, 'id', 'nama', 'Semua Status');
-        populateDropdown('addStatus', activeStatuses, 'id', 'nama', 'Pilih Status');
-        populateDropdown('editStatus', activeStatuses, 'id', 'nama', 'Pilih Status');
-        populateDropdown('addMode', activeModes, 'id', 'nama', 'Pilih Mode');
-        populateDropdown('editMode', activeModes, 'id', 'nama', 'Pilih Mode');
     } catch (error) {
         console.error('Error loading dropdown data:', error);
         showError('Gagal memuat data dropdown: ' + error.message);
@@ -282,19 +203,15 @@ function closeModal(modalId, formId) {
     if (formId) document.getElementById(formId).reset();
 }
 
-async function editProgress(id) {
+async function editLembur(id) {
     try {
         const query = `
             query {
-                jamKerja(id: ${id}) {
+                lembur(id: ${id}) {
                     id
                     tanggal
-                    jumlah_jam
-                    keterangan
                     proyek { id nama }
-                    aktivitas { id nama }
-                    status { id nama }
-                    mode { id nama }
+                    user_profile_id
                 }
             }
         `;
@@ -308,35 +225,30 @@ async function editProgress(id) {
         });
 
         const result = await response.json();
-        console.log('GraphQL response (editProgress):', result);
+        console.log('GraphQL response (editLembur):', result);
         if (result.errors) {
             throw new Error(result.errors.map(e => e.message).join(', '));
         }
 
-        const data = result.data.jamKerja;
+        const data = result.data.lembur;
         if (data) {
-            const form = document.getElementById('editProgressForm');
+            const form = document.getElementById('editLemburForm');
             form.querySelector('input[name="id"]').value = data.id;
             form.querySelector('input[name="tanggal"]').value = data.tanggal;
-            form.querySelector('input[name="jumlah_jam"]').value = data.jumlah_jam;
-            form.querySelector('textarea[name="keterangan"]').value = data.keterangan || '';
             form.querySelector('select[name="proyek_id"]').value = data.proyek?.id || '';
-            form.querySelector('select[name="aktivitas_id"]').value = data.aktivitas?.id || '';
-            form.querySelector('select[name="status_id"]').value = data.status?.id || '';
-            form.querySelector('select[name="mode_id"]').value = data.mode?.id || '';
-            openModal('editProgressModal');
+            openModal('editLemburModal');
         }
     } catch (error) {
-        console.error('Error loading progress for edit:', error);
+        console.error('Error loading lembur for edit:', error);
         showError('Gagal memuat data untuk edit: ' + error.message);
     }
 }
 
-async function deleteProgress(id) {
-    if (!confirm('Apakah Anda yakin ingin menghapus progress ini?')) return;
+async function deleteLembur(id) {
+    if (!confirm('Apakah Anda yakin ingin menghapus lembur ini?')) return;
 
     try {
-        const mutation = `mutation { deleteJamKerja(id: ${id}) { id } }`;
+        const mutation = `mutation { deleteLembur(id: ${id}) { id } }`;
         const response = await fetch('/graphql', {
             method: 'POST',
             headers: {
@@ -347,31 +259,29 @@ async function deleteProgress(id) {
         });
 
         const result = await response.json();
-        console.log('GraphQL response (deleteProgress):', result);
+        console.log('GraphQL response (deleteLembur):', result);
         if (result.errors) {
             throw new Error(result.errors.map(e => e.message).join(', '));
         }
 
         if (result.data) {
-            loadProgresData(currentPage, currentFilters);
+            loadLemburData(currentPage, currentFilters);
         }
     } catch (error) {
-        console.error('Error deleting progress:', error);
-        showError('Gagal menghapus progress: ' + error.message);
+        console.error('Error deleting lembur:', error);
+        showError('Gagal menghapus lembur: ' + error.message);
     }
 }
 
-function filterProgress() {
+function filterLembur() {
     const proyekId = document.getElementById('filterProyek').value;
-    const statusId = document.getElementById('filterStatus').value;
     currentFilters = {
         tanggal: document.getElementById('filterTanggal').value,
-        proyek_id: proyekId ? parseInt(proyekId) : null,
-        status_id: statusId ? parseInt(statusId) : null
+        proyek_id: proyekId ? parseInt(proyekId) : null
     };
     console.log('Applying filters:', currentFilters);
     currentPage = 1;
-    loadProgresData(currentPage, currentFilters);
+    loadLemburData(currentPage, currentFilters);
 }
 
 function updatePagination(total, page) {
@@ -390,7 +300,7 @@ function updatePagination(total, page) {
 function changePage(page) {
     if (page < 1) return;
     currentPage = page;
-    loadProgresData(currentPage, currentFilters);
+    loadLemburData(currentPage, currentFilters);
 }
 
 function showError(message) {
@@ -402,17 +312,12 @@ function showError(message) {
 }
 
 function validateFormData(input) {
-    if (!input.proyek_id) return 'Proyek harus dipilih';
-    if (!input.aktivitas_id) return 'Aktivitas harus dipilih';
     if (!input.tanggal) return 'Tanggal harus diisi';
-    if (!input.jumlah_jam || parseFloat(input.jumlah_jam) <= 0) return 'Jam kerja harus lebih dari 0';
-    if (!input.status_id) return 'Status harus dipilih';
-    if (!input.mode_id) return 'Mode harus dipilih';
     if (!userProfileId || isNaN(parseInt(userProfileId))) return 'User profile ID tidak valid. Periksa konfigurasi autentikasi.';
     return null;
 }
 
-document.getElementById('addProgressForm').addEventListener('submit', async (e) => {
+document.getElementById('addLemburForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const input = Object.fromEntries(formData);
@@ -425,15 +330,10 @@ document.getElementById('addProgressForm').addEventListener('submit', async (e) 
 
     const mutation = `
         mutation {
-            createJamKerja(input: {
-                proyek_id: ${parseInt(input.proyek_id)}
+            createLembur(input: {
                 user_profile_id: ${parseInt(userProfileId)}
-                aktivitas_id: ${parseInt(input.aktivitas_id)}
+                proyek_id: ${input.proyek_id ? parseInt(input.proyek_id) : null}
                 tanggal: "${input.tanggal}"
-                jumlah_jam: ${parseFloat(input.jumlah_jam)}
-                keterangan: "${input.keterangan || ''}"
-                status_id: ${parseInt(input.status_id)}
-                mode_id: ${parseInt(input.mode_id)}
             }) {
                 id
                 tanggal
@@ -442,7 +342,7 @@ document.getElementById('addProgressForm').addEventListener('submit', async (e) 
     `;
 
     try {
-        console.log('Sending mutation (createJamKerja):', mutation);
+        console.log('Sending mutation (createLembur):', mutation);
         const response = await fetch('/graphql', {
             method: 'POST',
             headers: {
@@ -453,22 +353,22 @@ document.getElementById('addProgressForm').addEventListener('submit', async (e) 
         });
 
         const result = await response.json();
-        console.log('GraphQL response (createJamKerja):', result);
+        console.log('GraphQL response (createLembur):', result);
         if (result.errors) {
             throw new Error(result.errors.map(e => e.message).join(', '));
         }
 
         if (result.data) {
-            closeModal('addProgressModal', 'addProgressForm');
-            loadProgresData(currentPage, currentFilters);
+            closeModal('addLemburModal', 'addLemburForm');
+            loadLemburData(currentPage, currentFilters);
         }
     } catch (error) {
-        console.error('Error creating progress:', error);
-        showError('Gagal menambahkan progress: ' + error.message);
+        console.error('Error creating lembur:', error);
+        showError('Gagal menambahkan lembur: ' + error.message);
     }
 });
 
-document.getElementById('editProgressForm').addEventListener('submit', async (e) => {
+document.getElementById('editLemburForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const input = Object.fromEntries(formData);
@@ -481,15 +381,10 @@ document.getElementById('editProgressForm').addEventListener('submit', async (e)
 
     const mutation = `
         mutation {
-            updateJamKerja(id: ${input.id}, input: {
-                proyek_id: ${parseInt(input.proyek_id)}
+            updateLembur(id: ${input.id}, input: {
                 user_profile_id: ${parseInt(userProfileId)}
-                aktivitas_id: ${parseInt(input.aktivitas_id)}
+                proyek_id: ${input.proyek_id ? parseInt(input.proyek_id) : null}
                 tanggal: "${input.tanggal}"
-                jumlah_jam: ${parseFloat(input.jumlah_jam)}
-                keterangan: "${input.keterangan || ''}"
-                status_id: ${parseInt(input.status_id)}
-                mode_id: ${parseInt(input.mode_id)}
             }) {
                 id
                 tanggal
@@ -498,7 +393,7 @@ document.getElementById('editProgressForm').addEventListener('submit', async (e)
     `;
 
     try {
-        console.log('Sending mutation (updateJamKerja):', mutation);
+        console.log('Sending mutation (updateLembur):', mutation);
         const response = await fetch('/graphql', {
             method: 'POST',
             headers: {
@@ -509,18 +404,18 @@ document.getElementById('editProgressForm').addEventListener('submit', async (e)
         });
 
         const result = await response.json();
-        console.log('GraphQL response (updateJamKerja):', result);
+        console.log('GraphQL response (updateLembur):', result);
         if (result.errors) {
             throw new Error(result.errors.map(e => e.message).join(', '));
         }
 
         if (result.data) {
-            closeModal('editProgressModal', 'editProgressForm');
-            loadProgresData(currentPage, currentFilters);
+            closeModal('editLemburModal', 'editLemburForm');
+            loadLemburData(currentPage, currentFilters);
         }
     } catch (error) {
-        console.error('Error updating progress:', error);
-        showError('Gagal memperbarui progress: ' + error.message);
+        console.error('Error updating lembur:', error);
+        showError('Gagal memperbarui lembur: ' + error.message);
     }
 });
 
@@ -533,6 +428,6 @@ document.addEventListener('DOMContentLoaded', () => {
         showError('Level pengguna tidak valid. Harus admin (4) atau user (7).');
         return;
     }
-    loadProgresData();
+    loadLemburData();
     loadDropdownData();
 });

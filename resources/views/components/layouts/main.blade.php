@@ -6,16 +6,19 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/alpinejs" defer></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-   <meta name="user-profile-id" content="{{ auth()->user()->userprofile->id ?? 1 }}">
+    <meta name="user-profile-id" content="{{ auth()->user()->userprofile->id ?? 1 }}">
+    <meta name="user-level-name" content="{{ auth()->user()->level->nama ?? 'User' }}">
+
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link rel="stylesheet" href="{{ asset('css/scrollable-data.css') }}">
     <style>
         body { font-family: 'Inter', sans-serif; }
         [x-cloak] { display: none !important; }
     </style>
 </head>
 <body class="bg-gray-100 flex">
-    <aside class="w-64 min-h-screen  p-5 bg-gradient-to-b from-blue-500 to-blue-700 shadow-lg "
+    <aside class="w-64 min-h-screen p-5 bg-gradient-to-b from-blue-500 to-blue-700 shadow-lg"
         x-data="sidebarState()" x-init="init()">
 
         <div class="flex items-center gap-2 mb-8">
@@ -39,8 +42,9 @@
             <a href="{{ route('progres.kerja') }}" class="flex items-center gap-3 p-2 rounded-lg text-white hover:bg-blue-600 transition">
                 <i class="fas fa-briefcase"></i>
                 Progres Proyek
-            </a>
+            </a>    
 
+            @if(auth()->user()->level->nama === 'Admin')
             <div>
                 <button @click="toggle('masterData')" class="flex items-center justify-between w-full p-2 rounded-lg text-white hover:bg-blue-600 transition">
                     <span class="flex items-center gap-3">
@@ -56,32 +60,31 @@
                     <li><a href="{{ route('level') }}" class="block p-2 rounded-lg text-white hover:bg-blue-500 flex items-center gap-3"><i class="fas fa-layer-group"></i> Level</a></li>
                     <li><a href="{{ route('keterangan') }}" class="block p-2 rounded-lg text-white hover:bg-blue-500 flex items-center gap-3"><i class="fas fa-info-circle"></i> Keterangan</a></li>
                     <li><a href="{{ route('user') }}" class="block p-2 rounded-lg text-white hover:bg-blue-500 flex items-center gap-3"><i class="fas fa-users"></i> User</a></li>
-                    <li><a href="{{ route('status') }}" class="block p-2 rounded-lg text-white hover:bg-blue-500 flex items-center gap-3"><i class="fas fa-info"></i>Status</a></li>
+                    <li><a href="{{ route('status') }}" class="block p-2 rounded-lg text-white hover:bg-blue-500 flex items-center gap-3"><i class="fas fa-info"></i> Status</a></li>
                     <li><a href="{{ route('mode.jam.kerja') }}" class="block p-2 rounded-lg text-white hover:bg-blue-500 flex items-center gap-3"><i class="fas fa-clock"></i> Mode Jam Kerja</a></li>
                     <li><a href="{{ route('status.jam.kerja') }}" class="block p-2 rounded-lg text-white hover:bg-blue-500 flex items-center gap-3"><i class="fas fa-check-circle"></i> Status Jam Kerja</a></li>
                 </ul>
             </div>
+            @endif
 
-             <a href="#" class="flex items-center gap-3 p-2 rounded-lg text-white hover:bg-blue-600 transition">
+            <a href="{{ route('lembur') }}" class="flex items-center gap-3 p-2 rounded-lg text-white hover:bg-blue-600 transition">
                 <i class="fas fa-clock"></i>
                 Lembur
             </a>
 
-          
-
-         <a href="#" class="flex items-center gap-3 p-2 rounded-lg text-white hover:bg-blue-600 transition">
+            <a href="{{ route('pesan') }}" class="flex items-center gap-3 p-2 rounded-lg text-white hover:bg-blue-600 transition">
                 <i class="fas fa-envelope"></i>
                 Pesan
             </a>
 
-           
-        <form action="/logout" method="POST" class="mt-6">
-            @csrf
-            <button type="submit" class="flex items-center gap-2 py-2 px-4 rounded-lg text-white bg-red-500 hover:bg-red-600 shadow transition">
-                <i class="fas fa-sign-out-alt"></i>
-                Logout
-            </button>
-        </form>
+            <form action="/logout" method="POST" class="mt-6">
+                @csrf
+                <button type="submit" class="flex items-center gap-2 py-2 px-4 rounded-lg text-white bg-red-500 hover:bg-red-600 shadow transition">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </button>
+            </form>
+        </nav>
     </aside>
 
     <div class="flex-1 p-6">

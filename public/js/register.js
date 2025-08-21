@@ -10,20 +10,55 @@ async function registerUser(event) {
         return;
     }
 
-    const userMutation = `
-        mutation {
-            createUser(input: { name: "${name}", email: "${email}", password: "${password}" }) {
+    const levelQuery = `
+        query {
+            allLevel {
                 id
-                name
-                email
+                nama
             }
         }
     `;
+    
+    const levelResponse = await fetch('/graphql', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: levelQuery })
+    });
+    
+    const levelResult = await levelResponse.json();
+    
+    if (levelResult.errors || !levelResult.data.allLevel) {
+        alert('Gagal mendapatkan level: ' + (levelResult.errors ? levelResult.errors[0].message : 'Level tidak ditemukan'));
+        return;
+    }
+    
+    const userLevel = levelResult.data.allLevel.find(level => level.nama === 'User');
+    
+    if (!userLevel) {
+        alert('Level User tidak ditemukan');
+        return;
+    }
+
+    const userMutation = `
+        mutation {
+            createUser(input: { name: "${name}", email: "${email}", password: "${password}", level_id: ${userLevel.id} }) {
+                id
+                name
+                email
+                level {
+                    id
+                    nama
+                }
+            }
+        }
+    `;
+    
     const userResponse = await fetch('/graphql', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query: userMutation })
     });
+    
     const userResult = await userResponse.json();
 
     if (userResult.errors) {
@@ -43,20 +78,26 @@ async function registerUser(event) {
                 alamat: null,
                 foto: null,
                 bagian_id: null,
-                level_id: null,
+                level_id: ${userLevel.id},
                 status_id: null
             }) {
                 id
                 user_id
                 nama_lengkap
+                level {
+                    id
+                    nama
+                }
             }
         }
     `;
+    
     const profileResponse = await fetch('/graphql', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query: profileMutation })
     });
+    
     const profileResult = await profileResponse.json();
 
     if (profileResult.errors) {
@@ -72,4 +113,3 @@ async function registerUser(event) {
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('registerForm').addEventListener('submit', registerUser);
 });
-

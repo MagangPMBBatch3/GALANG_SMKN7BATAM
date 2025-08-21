@@ -3,7 +3,7 @@
         <h1 class="text-2xl font-bold mb-4">Data User</h1>
 
         <div class="flex justify-between mb-4">
-            <input type="text" id="searchUser" name="searchUser" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Cari ID, Namal..." class="border p-2 rounded w-64" oninput="searchUser()">
+            <input type="text" id="searchUser" name="searchUser" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Cari ID, Nama..." class="border p-2 rounded w-64" oninput="searchUser()">
             <button onclick="openAddUserModal()" class="bg-blue-500 text-white px-4 py-2 rounded">
                 Tambah Data
             </button>
@@ -19,35 +19,40 @@
         </div>
 
         <div id="tableAktifUser">
-            <table class="w-full border">
-                <thead class="bg-gray-200">
-                    <tr>
-                        <th class="p-2 border">ID</th>
-                        <th class="p-2 border">Nama</th>
-                        <th class="p-2 border">Email</th>
-                        <th class="p-2 border">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody id="dataUser"></tbody>
-            </table>
+            <div class="scrollable-table-container">
+                <table class="w-full border">
+                    <thead class="bg-gray-200">
+                        <tr>
+                            <th class="p-2 border">ID</th>
+                            <th class="p-2 border">Nama</th>
+                            <th class="p-2 border">Email</th>
+                            <th class="p-2 border">Level</th>
+                            <th class="p-2 border">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dataUser"></tbody>
+                </table>
+            </div>
         </div>
 
         <div id="tableArsipUser" class="hidden">
-            <table class="w-full border">
-                <thead class="bg-gray-200">
-                    <tr>
-                        <th class="p-2 border">ID</th>
-                        <th class="p-2 border">Nama</th>
-                        <th class="p-2 border">Email</th>
-                        <th class="p-2 border">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody id="dataUserArsip"></tbody>
-            </table>
+            <div class="scrollable-table-container">
+                <table class="w-full border">
+                    <thead class="bg-gray-200">
+                        <tr>
+                            <th class="p-2 border">ID</th>
+                            <th class="p-2 border">Nama</th>
+                            <th class="p-2 border">Email</th>
+                            <th class="p-2 border">Level</th>
+                            <th class="p-2 border">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dataUserArsip"></tbody>
+                </table>
+            </div>
         </div>
     </div>
     @include('components.user.modal-add')
-
     @include('components.user.modal-edit')
 
     <script src="{{ asset('js/user/user.js') }}"></script>

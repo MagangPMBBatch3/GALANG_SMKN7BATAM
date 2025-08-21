@@ -26,6 +26,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'level_id',
     ];
 
     /**
@@ -66,6 +67,11 @@ class User extends Authenticatable
     {
         $this->attributes['password'] = Hash::make($value);
     }   
+
+    public function level()
+    {
+        return $this->belongsTo(\App\Models\Level\Levels::class, 'level_id');
+    }
 
     
 }

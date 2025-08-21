@@ -7,12 +7,14 @@ type User {
     created_at: DateTime
     updated_at: DateTime
     deleted_at: DateTime
+    level: Level @belongsTo(relation: "level")
 }
 
 input CreateUserInput {
     name: String!
     email: String!
     password: String!
+    level_id: ID!
 }
 
 input UpdateUserInput {
@@ -20,6 +22,7 @@ input UpdateUserInput {
     email: String
     password: String
     email_verified_at: DateTime
+    level_id: ID
 }
 
 extend type Query {
@@ -40,7 +43,7 @@ extend type Mutation {
     createUser(input: CreateUserInput! @spread): User
     @create(model: "App\\Models\\User\\User")
 
-    updateUser(input: UpdateUserInput! @spread): User
+    updateUser(id: ID! @eq, input: UpdateUserInput! @spread): User
     @update(model: "App\\Models\\User\\User")
 
     deleteUser(id: ID! @eq(key: "id")): User
@@ -52,3 +55,4 @@ extend type Mutation {
     forceDeleteUser(id: ID!): User
     @field(resolver: "App\\GraphQL\\User\\Mutations\\UserMutation@forceDelete")
 }
+
