@@ -3,6 +3,7 @@
         <div class="flex flex-1 overflow-hidden">
             <div class="w-1/3 bg-white shadow-md border-r border-gray-200 overflow-y-auto">
                 <div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-4 text-white sticky top-0 z-10">
+                    
                     <h1 class="text-2xl font-bold">Pesan</h1>
                     <button onclick="openModal('addPesanModal')" class="mt-2 bg-white text-blue-600 px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-100 transition-colors">
                         Pesan Baru
@@ -24,7 +25,7 @@
                         <select name="jenis_id" id="sendJenis" class="w-1/5 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500">
                             <option value="">Pilih Jenis</option>
                         </select>
-                        <input type="text" name="isi" placeholder="Ketik pesan..." class="flex-1 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500 py-2">
+                        <input type="text" name="isi" placeholder="Ketik pesan..." class="flex-1 rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500 py-2 outline-none">
                         <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
                             Kirim
                         </button>

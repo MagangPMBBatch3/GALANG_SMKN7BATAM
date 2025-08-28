@@ -28,4 +28,9 @@ class Proyek extends Model
         'updated_at' => 'datetime',
         'created_at' => 'datetime',
     ];
+
+    public function jamKerja()
+    {
+        return $this->hasMany(JamKerja::class, 'proyek_id', 'id');
+    }
 }

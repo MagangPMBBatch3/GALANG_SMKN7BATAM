@@ -172,6 +172,7 @@ async function updateUserProfile() {
     const nrp = document.getElementById('editUserProfileNrp').value.trim();
     const alamat = document.getElementById('editUserProfileAlamat').value.trim();
     const fileInput = document.getElementById('editUserProfileFoto');
+    console.log('Selected file:', fileInput.files[0]);
     let foto = document.getElementById('editUserProfileFotoExisting').value;
     const bagian_id = document.getElementById('editUserProfileBagianId').value;
     const level_id = document.getElementById('editUserProfileLevelId').value;
@@ -186,11 +187,13 @@ async function updateUserProfile() {
         const formData = new FormData();
         formData.append('foto', fileInput.files[0]);
         formData.append('_token', document.querySelector('meta[name="csrf-token"]').content);
+        console.log('FormData:', formData.get('foto'));
         const uploadRes = await fetch('/upload-foto', {
             method: 'POST',
             body: formData
         });
         const uploadData = await uploadRes.json();
+        console.log('Upload response:', uploadData);
         if (uploadData.error) {
             alert(uploadData.error);
             return;

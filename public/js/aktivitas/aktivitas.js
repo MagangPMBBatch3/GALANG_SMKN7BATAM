@@ -10,6 +10,8 @@ async function loadAktivitasData() {
             }
         }
     `;
+
+    
     const resAktif = await fetch('/graphql', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

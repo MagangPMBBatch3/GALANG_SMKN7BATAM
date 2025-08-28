@@ -17,9 +17,9 @@
         <select id="editUserProfileBagianId" class="border p-2 w-full mb-4 rounded">
             <option value="">Pilih Bagian</option>
         </select>
-        <select id="editUserProfileLevelId" class="border p-2 w-full mb-4 rounded">
-            <option value="">Pilih Level</option>
-        </select>
+        <input type="hidden" id="editUserProfileLevelId" class="border p-2 w-full mb-4 rounded">
+           
+    </input>
         <select id="editUserProfileStatusId" class="border p-2 w-full mb-4 rounded">
             <option value="">Pilih Status</option>
         </select>
