@@ -290,10 +290,21 @@ function updatePagination(total, page) {
     const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
     info.textContent = `Menampilkan ${Math.min(total, ITEMS_PER_PAGE)} dari ${total} data (Halaman ${page})`;
 
+    const prevDisabled = page === 1 ? 'disabled opacity-50 cursor-not-allowed' : 'hover:bg-gray-300';
+    const nextDisabled = page >= totalPages ? 'disabled opacity-50 cursor-not-allowed' : 'hover:bg-gray-300';
+
     links.innerHTML = `
-        <button onclick="changePage(${page - 1})" ${page === 1 ? 'disabled' : ''} class="px-3 py-1 bg-gray-200 rounded ${page === 1 ? 'opacity-50' : 'hover:bg-gray-300'}">Sebelumnya</button>
-        <span class="px-3 py-1 bg-blue-500 text-white rounded">Halaman ${page}</span>
-        <button onclick="changePage(${page + 1})" ${page >= totalPages ? 'disabled' : ''} class="px-3 py-1 bg-gray-200 rounded ${page >= totalPages ? 'opacity-50' : 'hover:bg-gray-300'}">Berikutnya</button>
+        <button onclick="changePage(${page - 1})" ${page === 1 ? 'disabled' : ''} class="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 bg-gray-200 rounded-full transition-colors ${prevDisabled}" title="Halaman Sebelumnya">
+            <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+        </button>
+        <span class="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 bg-blue-500 text-white rounded-full text-xs sm:text-sm font-medium">${page}</span>
+        <button onclick="changePage(${page + 1})" ${page >= totalPages ? 'disabled' : ''} class="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 bg-gray-200 rounded-full transition-colors ${nextDisabled}" title="Halaman Berikutnya">
+            <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+        </button>
     `;
 }
 

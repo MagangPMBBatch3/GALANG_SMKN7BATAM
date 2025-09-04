@@ -45,6 +45,9 @@ extend type Query {
 
     userProfile(id: ID! @eq): UserProfile
     @find(model: "App\\Models\\UserProfile\\UserProfile")
+
+    allUserProfiles: [UserProfile!]!
+    @all(model: "App\\Models\\UserProfile\\UserProfile")
 }
 
 extend type Mutation {

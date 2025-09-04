@@ -1,4 +1,3 @@
-
 <?php
 
 use Illuminate\Support\Facades\Route;
@@ -36,10 +35,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/lembur', [AuthController::class, 'lembur'])->name('lembur');
     Route::get('/pesan', [AuthController::class, 'pesan'])->name('pesan');
     Route::get('/jenisPesan', [AuthController::class, 'jenisPesan'])->name('jenis.pesan');
+    
+    Route::get('/rekan', [AuthController::class, 'rekan'])->name('rekan');
 
     Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
     Route::post('/profile', [AuthController::class, 'updateProfile'])->name('profile.update');
-
 
     Route::post('/upload-foto', [AuthController::class, 'uploadFoto'])->name('upload.foto');
 

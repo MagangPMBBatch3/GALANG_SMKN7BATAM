@@ -1,9 +1,9 @@
 <x-layouts.main title="Lembur">
-    <div class="container mx-auto px-4 py-8">
-        <div class="bg-white rounded-lg shadow-lg p-6">
-            <div class="flex justify-between items-center mb-6">
-                <h1 class="text-2xl font-bold text-gray-800">Lembur</h1>
-                <button onclick="openModal('addLemburModal')" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+    <div class="max-w-xs sm:max-w-sm md:max-w-screen-sm mx-auto px-4 py-6 md:py-8">
+        <div class="bg-white rounded-lg shadow-lg p-4 md:p-6">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                <h1 class="text-xl md:text-2xl font-bold text-gray-800">Lembur</h1>
+                <button onclick="openModal('addLemburModal')" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 text-sm md:text-base w-full sm:w-auto">
                     Tambah Lembur
                 </button>
             </div>
@@ -23,20 +23,24 @@
                 </div>
             </div>
 
-            <div class="mb-4 flex space-x-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Tanggal</label>
-                    <input type="date" id="filterTanggal" class="mt-1 block w-full rounded-md border-gray-300">
+            <div class="mb-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Tanggal</label>
+                        <input type="date" id="filterTanggal" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Proyek</label>
+                        <select id="filterProyek" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Semua Proyek</option>
+                        </select>
+                    </div>
+                    <div class="flex items-end">
+                        <button onclick="filterLembur()" class="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+                            Filter
+                        </button>
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Proyek</label>
-                    <select id="filterProyek" class="mt-1 block w-full rounded-md border-gray-300">
-                        <option value="">Semua Proyek</option>
-                    </select>
-                </div>
-                <button onclick="filterLembur()" class="mt-6 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                    Filter
-                </button>
             </div>
 
             <div class="overflow-x-auto">
@@ -56,11 +60,11 @@
                 </div>
             </div>
 
-            <div class="mt-4 flex justify-between items-center">
-                <div id="paginationInfo" class="text-sm text-gray-700">
+            <div class="mt-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                <div id="paginationInfo" class="text-xs sm:text-sm text-gray-700">
                     Menampilkan 0 dari 0 data
                 </div>
-                <div id="paginationLinks" class="flex space-x-2">
+                <div id="paginationLinks" class="flex flex-wrap gap-1 sm:gap-2">
                 </div>
             </div>
         </div>

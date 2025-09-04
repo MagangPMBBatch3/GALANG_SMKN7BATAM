@@ -81,10 +81,12 @@ function renderConversationList(penerimaList) {
         <div class="p-4 text-center text-gray-500">Tidak ada percakapan</div>
     `;
     penerimaList.forEach(penerima => {
+        const isActive = String(penerima.id) === String(currentPenerimaId);
+        const activeClass = isActive ? 'active' : '';
         const avatar = penerima.foto ? `<img src="${penerima.foto}" alt="${penerima.nama_lengkap}" class="w-10 h-10 rounded-full object-cover mr-3">` :
             `<div class="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center mr-3">${penerima.nama_lengkap.charAt(0).toUpperCase()}</div>`;
         conversationList.innerHTML += `
-            <div class="conversation-item p-4 cursor-pointer flex items-center" onclick="selectConversation('${penerima.id}', '${penerima.nama_lengkap.replace(/'/g, "\\'")}', '${penerima.foto || ''}')">
+            <div class="conversation-item p-4 cursor-pointer flex items-center ${activeClass}" onclick="selectConversation('${penerima.id}', '${penerima.nama_lengkap.replace(/'/g, "\\'")}', '${penerima.foto || ''}')">
                 ${avatar}
                 <div>
                     <div class="font-semibold text-gray-800">${penerima.nama_lengkap}</div>
@@ -98,7 +100,17 @@ async function selectConversation(penerimaId, namaLengkap, foto) {
     currentPenerimaId = penerimaId;
     const avatar = foto ? `<img src="${foto}" alt="${namaLengkap}" class="w-10 h-10 rounded-full object-cover mr-3">` :
         `<div class="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center mr-3">${namaLengkap.charAt(0).toUpperCase()}</div>`;
+
+    const toggleButton = window.innerWidth < 768 ? `
+        <button onclick="toggleSidebar()" class="md:hidden mr-3 p-2 rounded-full hover:bg-gray-100 transition-colors">
+            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+        </button>
+    ` : '';
+
     document.getElementById('chatHeader').innerHTML = `
+        ${toggleButton}
         ${avatar}
         <h2 class="text-lg font-semibold text-gray-800">${namaLengkap}</h2>
     `;
@@ -112,6 +124,12 @@ async function selectConversation(penerimaId, namaLengkap, foto) {
     if (loadingIndicator) {
         loadingIndicator.classList.add('hidden');
     }
+
+    if (window.innerWidth < 768) {
+        closeSidebar();
+    }
+
+    await loadConversationList();
 }
 
 async function loadMessages() {
@@ -232,7 +250,7 @@ function formatDate(dateString) {
 async function loadDropdownData() {
     try {
         const jenisQuery = `query { allJenisPesan { id nama deleted_at } }`;
-        const userQuery = `query { allUserProfiles { id nama_lengkap } }`;
+        const userQuery = `query { allUserProfiles { id nama_lengkap foto } }`;
         const [jenisResponse, userResponse] = await Promise.all([
             fetch('/graphql', {
                 method: 'POST',
@@ -257,7 +275,7 @@ async function loadDropdownData() {
         const activeJenis = jenisData.data.allJenisPesan.filter(jenis => !jenis.deleted_at);
         populateDropdown('addJenis', activeJenis, 'id', 'nama', 'Pilih Jenis');
         populateDropdown('sendJenis', activeJenis, 'id', 'nama', 'Pilih Jenis');
-        populateDropdown('addPenerima', userData.data.allUserProfiles.filter(user => user.id !== userProfileId), 'id', 'nama_lengkap', 'Pilih Penerima');
+        renderUserDropdown(userData.data.allUserProfiles.filter(user => user.id !== userProfileId));
     } catch (error) {
         console.error('Error loading dropdown data:', error);
         showError('Gagal memuat data dropdown: ' + error.message);
@@ -279,13 +297,96 @@ function populateDropdown(selectId, data, valueKey, textKey, defaultText = 'Pili
     });
 }
 
+function renderUserDropdown(users) {
+    const container = document.getElementById('addPenerimaList');
+    if (!container) {
+        console.error('User dropdown container not found');
+        return;
+    }
+    container.innerHTML = users.length ? '' : '<div class="px-3 py-2 text-gray-500 text-sm">Tidak ada pengguna tersedia</div>';
+
+    users.forEach(user => {
+        const avatar = user.foto ?
+            `<img src="${user.foto}" alt="${user.nama_lengkap}" class="w-8 h-8 rounded-full object-cover mr-3">` :
+            `<div class="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center mr-3 font-semibold text-sm">${user.nama_lengkap.charAt(0).toUpperCase()}</div>`;
+
+        const option = document.createElement('div');
+        option.className = 'dropdown-option px-3 py-2 hover:bg-gray-100 cursor-pointer flex items-center';
+        option.setAttribute('data-user-id', user.id);
+        option.innerHTML = `
+            ${avatar}
+            <div class="flex-1 min-w-0">
+                <div class="font-medium text-gray-900 truncate text-sm">${user.nama_lengkap}</div>
+            </div>
+        `;
+        option.onclick = () => selectUserFromDropdown(user.id, user.nama_lengkap, user.foto);
+        container.appendChild(option);
+    });
+}
+
+function selectUserFromDropdown(userId, namaLengkap, foto) {
+    const selectedSpan = document.getElementById('addPenerimaSelected');
+    const avatar = foto ?
+        `<img src="${foto}" alt="${namaLengkap}" class="w-6 h-6 rounded-full object-cover mr-2">` :
+        `<div class="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center mr-2 font-semibold text-xs">${namaLengkap.charAt(0).toUpperCase()}</div>`;
+
+    selectedSpan.innerHTML = `${avatar}<span class="truncate">${namaLengkap}</span>`;
+    selectedSpan.className = 'text-gray-900 flex items-center';
+
+    document.getElementById('addPenerima').value = userId;
+    toggleDropdown(false);
+}
+
+function toggleDropdown(show = null) {
+    const options = document.getElementById('addPenerimaOptions');
+    const arrow = document.getElementById('addPenerimaArrow');
+
+    if (show === null) {
+        show = options.classList.contains('hidden');
+    }
+
+    if (show) {
+        options.classList.remove('hidden');
+        arrow.classList.add('rotate-180');
+    } else {
+        options.classList.add('hidden');
+        arrow.classList.remove('rotate-180');
+    }
+}
+
+function initDropdown() {
+    const dropdown = document.getElementById('addPenerimaDropdown');
+    if (dropdown) {
+        dropdown.onclick = () => toggleDropdown();
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+        const dropdown = document.getElementById('addPenerimaDropdown');
+        const options = document.getElementById('addPenerimaOptions');
+        if (!dropdown.contains(e.target) && !options.contains(e.target)) {
+            toggleDropdown(false);
+        }
+    });
+}
+
 function openModal(modalId) {
     document.getElementById(modalId).classList.remove('hidden');
 }
 
 function closeModal(modalId, formId) {
     document.getElementById(modalId).classList.add('hidden');
-    if (formId) document.getElementById(formId).reset();
+    if (formId) {
+        document.getElementById(formId).reset();
+        // Clear dropdown selection
+        const selectedSpan = document.getElementById('addPenerimaSelected');
+        if (selectedSpan) {
+            selectedSpan.innerHTML = 'Pilih Penerima';
+            selectedSpan.className = 'text-gray-500';
+        }
+        document.getElementById('addPenerima').value = '';
+        toggleDropdown(false);
+    }
 }
 
 async function deleteMessage(messageId) {
@@ -431,4 +532,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     loadConversationList();
     loadDropdownData();
+    initDropdown();
+
+    window.toggleSidebar = function() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        if (sidebar.classList.contains('-translate-x-full')) {
+            sidebar.classList.remove('-translate-x-full');
+            overlay.classList.remove('hidden');
+        } else {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+        }
+    };
+
+    window.closeSidebar = function() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+    };
 });

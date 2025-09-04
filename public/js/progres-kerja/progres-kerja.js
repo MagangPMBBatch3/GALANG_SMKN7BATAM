@@ -36,7 +36,7 @@ async function loadProgresData(page = 1, filters = {}) {
             data = applyClientSideFilters(data, filters);
             const start = (page - 1) * ITEMS_PER_PAGE;
             const paginatedData = data.slice(start, start + ITEMS_PER_PAGE);
-            renderProgressTable(paginatedData);
+            renderProgressCards(paginatedData);
             updateSummary(data);
             updatePagination(data.length, page);
         }
@@ -134,37 +134,47 @@ function buildQuery(page, filters) {
     }
 }
 
-function renderProgressTable(data) {
-    const tbody = document.getElementById('progressTableBody');
+function renderProgressCards(data) {
+    const container = document.getElementById('progressCardsContainer');
     const isAdmin = userLevelName === 'Admin';
-    tbody.innerHTML = data.length ? '' : `
-        <tr>
-            <td colspan="${isAdmin ? 8 : 7}" class="px-6 py-4 text-center text-gray-500">
-                Tidak ada data progress kerja
-            </td>
-        </tr>
+    container.innerHTML = data.length ? '' : `
+        <div class="col-span-full text-center py-8">
+            <div class="text-gray-500">
+                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                </svg>
+                <h3 class="mt-2 text-sm font-medium text-gray-900">Tidak ada data progress kerja</h3>
+                <p class="mt-1 text-sm text-gray-500">Belum ada progress kerja yang tersedia.</p>
+            </div>
+        </div>
     `;
 
     data.forEach(item => {
-        tbody.innerHTML += `
-            <tr>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${formatDate(item.tanggal)}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.proyek?.nama || '-'}</td>
-                ${isAdmin ? `<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.userprofile?.nama_lengkap || '-'}</td>` : ''}
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.aktivitas?.nama || '-'}</td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.jumlah_jam} jam</td>
-                <td class="px-6 py-4 text-sm text-gray-900">${item.keterangan || '-'}</td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(item.status?.id)}">
-                        ${item.status?.nama || '-'}
-                    </span>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <button onclick="editProgress(${item.id})" class="text-indigo-600 hover:text-indigo-900 mr-2">Edit</button>
-                    <button onclick="deleteProgress(${item.id})" class="text-red-600 hover:text-red-900">Hapus</button>
-                </td>
-            </tr>
+        const card = document.createElement('div');
+        card.className = 'bg-white rounded-lg shadow-md p-4 border border-gray-200 hover:shadow-lg transition-all duration-200 cursor-pointer flex flex-row items-center space-x-4 relative group';
+        card.style.minHeight = '100px';
+        card.onclick = () => editProgress(item.id);
+        card.innerHTML = `
+            <div class="flex-1">
+                <h3 class="text-lg font-semibold text-gray-900">${item.proyek?.nama || '-'}</h3>
+                <p class="text-sm text-gray-600">${formatDate(item.tanggal)}</p>
+                ${isAdmin ? `<p class="text-sm text-gray-700"><strong>User:</strong> ${item.userprofile?.nama_lengkap || '-'}</p>` : ''}
+                <p class="text-sm text-gray-700"><strong>Aktivitas:</strong> ${item.aktivitas?.nama || '-'}</p>
+                <p class="text-sm text-gray-700"><strong>Jam Kerja:</strong> ${item.jumlah_jam} jam</p>
+                ${item.keterangan ? `<p class="text-sm text-gray-700"><strong>Keterangan:</strong> ${item.keterangan}</p>` : ''}
+            </div>
+            <div class="flex flex-col justify-between items-end space-y-2 min-w-[120px]">
+                <span class="px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(item.status?.id)}">
+                    ${item.status?.nama || '-'}
+                </span>
+                <button onclick="event.stopPropagation(); deleteProgress(${item.id})" class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1 hover:bg-red-50 rounded-full" title="Hapus">
+                    <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                </button>
+            </div>
         `;
+        container.appendChild(card);
     });
 }
 
@@ -380,10 +390,21 @@ function updatePagination(total, page) {
     const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
     info.textContent = `Menampilkan ${Math.min(total, ITEMS_PER_PAGE)} dari ${total} data (Halaman ${page})`;
 
+    const prevDisabled = page === 1 ? 'disabled opacity-50 cursor-not-allowed' : 'hover:bg-gray-300';
+    const nextDisabled = page >= totalPages ? 'disabled opacity-50 cursor-not-allowed' : 'hover:bg-gray-300';
+
     links.innerHTML = `
-        <button onclick="changePage(${page - 1})" ${page === 1 ? 'disabled' : ''} class="px-3 py-1 bg-gray-200 rounded ${page === 1 ? 'opacity-50' : 'hover:bg-gray-300'}">Sebelumnya</button>
-        <span class="px-3 py-1 bg-blue-500 text-white rounded">Halaman ${page}</span>
-        <button onclick="changePage(${page + 1})" ${page >= totalPages ? 'disabled' : ''} class="px-3 py-1 bg-gray-200 rounded ${page >= totalPages ? 'opacity-50' : 'hover:bg-gray-300'}">Berikutnya</button>
+        <button onclick="changePage(${page - 1})" ${page === 1 ? 'disabled' : ''} class="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 bg-gray-200 rounded-full transition-colors ${prevDisabled}" title="Halaman Sebelumnya">
+            <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+        </button>
+        <span class="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 bg-blue-500 text-white rounded-full text-xs sm:text-sm font-medium">${page}</span>
+        <button onclick="changePage(${page + 1})" ${page >= totalPages ? 'disabled' : ''} class="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 bg-gray-200 rounded-full transition-colors ${nextDisabled}" title="Halaman Berikutnya">
+            <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+        </button>
     `;
 }
 

@@ -2,12 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Progress Project</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/alpinejs" defer></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="user-profile-id" content="{{ auth()->user()->userprofile->id ?? 1 }}">
     <meta name="user-level-name" content="{{ auth()->user()->level->nama ?? 'User' }}">
+    <meta name="user-profile-photo" content="{{ auth()->user()->userprofile->foto ?? '' }}">
+    <meta name="user-profile-name" content="{{ auth()->user()->userprofile->nama_lengkap ?? 'User' }}">
 
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
@@ -17,9 +20,11 @@
         [x-cloak] { display: none !important; }
     </style>
 </head>
-<body class="bg-gray-100 flex">
-    <aside class="w-64 min-h-screen p-5 bg-gradient-to-b from-blue-500 to-blue-700 shadow-lg"
-        x-data="sidebarState()" x-init="init()">
+<body class="bg-gray-100 flex" x-data="sidebarState()" x-init="init()">
+    <div x-show="isOpen" @click="isOpen = false" class="fixed inset-0 z-20 bg-black bg-opacity-50 lg:hidden" x-cloak></div>
+
+    <aside class="fixed inset-y-0 left-0 z-30 w-64 min-h-screen p-5 bg-gradient-to-b from-blue-500 to-blue-700 shadow-lg transform -translate-x-full lg:translate-x-0 lg:static lg:inset-0 transition-transform duration-300 ease-in-out"
+        :class="{ 'translate-x-0': isOpen }">
 
         <div class="flex items-center gap-2 mb-8">
             <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow">
@@ -37,6 +42,11 @@
             <a href="{{ route('userprofile') }}" class="flex items-center gap-3 p-2 rounded-lg text-white hover:bg-blue-600 transition">
                 <i class="fas fa-user-circle"></i>
                 Profil
+            </a>
+
+            <a href="{{ route('rekan')}}" class="flex items-center gap-3 p-2 rounded-lg text-white hover:bg-blue-600 transition">
+                <i class="fas fa-person"></i>
+                Rekan Kerja
             </a>
             
             <a href="{{ route('progres.kerja') }}" class="flex items-center gap-3 p-2 rounded-lg text-white hover:bg-blue-600 transition">
@@ -88,8 +98,11 @@
         </nav>
     </aside>
 
-    <div class="flex-1 p-6">
-        <div>
+    <div class="flex-1 p-6 lg:ml-0">
+        <button @click="isOpen = !isOpen" class="lg:hidden fixed top-4 left-4 z-40 p-2 bg-blue-600 text-white rounded-lg shadow-lg">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="pt-12 lg:pt-0">
             {{ $slot }}
         </div>
     </div>
@@ -97,6 +110,7 @@
     <script>
         function sidebarState() {
             return {
+                isOpen: false,
                 openSection: localStorage.getItem('sidebarOpen') || '',
                 toggle(section) {
                     this.openSection = (this.openSection === section) ? '' : section;

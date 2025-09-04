@@ -1,5 +1,5 @@
 .scrollable-container {
-    max-height: 300px; 
+    max-height: 40vh;
     overflow-y: auto;
     border: 1px solid #e5e7eb;
     border-radius: 0.5rem;
@@ -24,7 +24,7 @@
 }
 
 .scrollable-table-container {
-    max-height: 300px;
+    max-height: 40vh;
     overflow-y: auto;
     border: 1px solid #e5e7eb;
     border-radius: 0.5rem;
@@ -47,6 +47,6 @@
 @media (max-width: 768px) {
     .scrollable-container,
     .scrollable-table-container {
-        max-height: 250px;
+        max-height: 30vh;
     }
 }

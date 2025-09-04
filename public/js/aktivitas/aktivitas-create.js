@@ -13,7 +13,7 @@ async function createAktivitas() {
     const nama = document.getElementById('addAktivitasNama').value.trim();
 
     if (!nama) {
-        alert('Nama wajib diisi!'); // kkkk
+        alert('Nama wajib diisi!'); 
         return;
     }
 

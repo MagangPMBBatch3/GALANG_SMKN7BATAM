@@ -52,8 +52,6 @@ extend type Query {
 
    
 
-    allUserProfiles: [UserProfile!]!
-    @all(model: "App\\Models\\UserProfile\\UserProfile")
 }
 
 extend type Mutation {
