@@ -360,7 +360,6 @@ function initDropdown() {
         dropdown.onclick = () => toggleDropdown();
     }
 
-    // Close dropdown when clicking outside
     document.addEventListener('click', (e) => {
         const dropdown = document.getElementById('addPenerimaDropdown');
         const options = document.getElementById('addPenerimaOptions');
@@ -378,7 +377,6 @@ function closeModal(modalId, formId) {
     document.getElementById(modalId).classList.add('hidden');
     if (formId) {
         document.getElementById(formId).reset();
-        // Clear dropdown selection
         const selectedSpan = document.getElementById('addPenerimaSelected');
         if (selectedSpan) {
             selectedSpan.innerHTML = 'Pilih Penerima';

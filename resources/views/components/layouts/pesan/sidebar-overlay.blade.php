@@ -1,0 +1,1 @@
+<div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-20 md:hidden hidden" onclick="closeSidebar()"></div>
