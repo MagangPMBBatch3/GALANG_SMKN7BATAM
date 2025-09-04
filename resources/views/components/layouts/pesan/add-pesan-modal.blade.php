@@ -14,13 +14,13 @@
                                 </svg>
                             </div>
                             <div id="addPenerimaOptions" class="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto hidden">
-                                <div id="addPenerimaCards" class="p-2"></div>
+                                <div id="addPenerimaList" class="p-2"></div>
                             </div>
                         </div>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Jenis</label>
-                        <select name="jenis_id" required class="mt-1 block w-full rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500">
+                        <select name="jenis_id" id="addJenis" required class="mt-1 block w-full rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500">
                             <option value="">Pilih Jenis</option>
                         </select>
                     </div>

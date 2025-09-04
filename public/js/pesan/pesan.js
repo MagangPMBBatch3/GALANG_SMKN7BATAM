@@ -114,7 +114,12 @@ async function selectConversation(penerimaId, namaLengkap, foto) {
         ${avatar}
         <h2 class="text-lg font-semibold text-gray-800">${namaLengkap}</h2>
     `;
-    document.getElementById('currentPenerimaId').value = penerimaId;
+    const currentPenerimaElement = document.getElementById('currentPenerimaId');
+    if (currentPenerimaElement) {
+        currentPenerimaElement.value = penerimaId;
+    } else {
+        console.warn('Element with id "currentPenerimaId" not found');
+    }
     document.getElementById('chatMessages').innerHTML = '';
     const loadingIndicator = document.getElementById('loadingIndicator');
     if (loadingIndicator) {
@@ -374,15 +379,24 @@ function openModal(modalId) {
 }
 
 function closeModal(modalId, formId) {
-    document.getElementById(modalId).classList.add('hidden');
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.add('hidden');
+    }
     if (formId) {
-        document.getElementById(formId).reset();
+        const form = document.getElementById(formId);
+        if (form) {
+            form.reset();
+        }
         const selectedSpan = document.getElementById('addPenerimaSelected');
         if (selectedSpan) {
             selectedSpan.innerHTML = 'Pilih Penerima';
             selectedSpan.className = 'text-gray-500';
         }
-        document.getElementById('addPenerima').value = '';
+        const addPenerima = document.getElementById('addPenerima');
+        if (addPenerima) {
+            addPenerima.value = '';
+        }
         toggleDropdown(false);
     }
 }

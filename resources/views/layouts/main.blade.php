@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'Progress Project')</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/alpinejs" defer></script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="user-profile-id" content="{{ auth()->user()->userprofile->id ?? 1 }}">
     <meta name="user-level-name" content="{{ auth()->user()->level->nama ?? 'User' }}">
