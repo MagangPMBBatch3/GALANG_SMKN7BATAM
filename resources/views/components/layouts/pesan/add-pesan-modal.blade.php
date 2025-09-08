@@ -3,6 +3,7 @@
         <div class="mt-3">
             <h3 class="text-xl font-semibold text-gray-900 mb-4">Kirim Pesan Baru</h3>
             <form id="addPesanForm">
+                <input type="hidden" id="addPenerima" name="penerima_id" value="">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Penerima</label>
