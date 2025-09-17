@@ -34,7 +34,19 @@ extend type Query {
 
     allProyekArsip: [Proyek!]!
     @field(resolver: "App\\GraphQL\\Proyek\\Queries\\ProyekQuery@allProyekArsip")
+
+    allProyekPaginate(
+        search: String
+        first: Int
+        page: Int
+    ): ProyekPaginator
+    @field(resolver: "App\\GraphQL\\Proyek\\Queries\\ProyekQuery@all")
     
+}
+
+type ProyekPaginator {
+    data: [Proyek!]!
+    paginatorInfo: PageInfo!
 }
 
 extend type Mutation {

@@ -30,6 +30,18 @@ extend type Query {
     allKeteranganArsip: [Keterangan!]!
     @field(resolver: "App\\GraphQL\\Keterangan\\Queries\\KeteranganQuery@allKeteranganArsip")
 
+    allKeteranganPaginate(
+        search: String
+        first: Int
+        page: Int
+    ): KeteranganPaginator
+    @field(resolver: "App\\GraphQL\\Keterangan\\Queries\\KeteranganQuery@all")
+
+}
+
+type KeteranganPaginator {
+    data: [Keterangan!]!
+    paginatorInfo: PageInfo!
 }
 
 extend type Mutation {

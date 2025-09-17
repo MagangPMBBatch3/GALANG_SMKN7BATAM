@@ -18,4 +18,10 @@ scalar DateTime
 #import ./StatusJamKerja/schema.graphql 
 #import ./JamKerja/schema.graphql
 
-
+type PageInfo {
+    hasMorePages: Boolean!
+    currentPage: Int!
+    lastPage: Int!
+    perPage: Int!
+    total: Int!
+}

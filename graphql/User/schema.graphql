@@ -37,6 +37,18 @@ extend type Query {
 
     allUserArsip: [User!]!
     @field(resolver: "App\\GraphQL\\User\\Queries\\UserQuery@allUserArsip")
+
+    allUserPaginate(
+        search: String
+        first: Int
+        page: Int
+    ): UserPaginator
+    @field(resolver: "App\\GraphQL\\User\\Queries\\UserQuery@all")
+}
+
+type UserPaginator {
+    data: [User!]!
+    paginatorInfo: PageInfo!
 }
 
 extend type Mutation {

@@ -27,6 +27,18 @@ extend type Query {
 
     allLevelArsip: [Level!]!
     @field(resolver: "App\\GraphQL\\Level\\Queries\\LevelQuery@allLevelArsip")
+
+    allLevelPaginate(
+        search: String
+        first: Int
+        page: Int
+    ): LevelPaginator
+    @field(resolver: "App\\GraphQL\\Level\\Queries\\LevelQuery@all")
+}
+
+type LevelPaginator {
+    data: [Level!]!
+    paginatorInfo: PageInfo!
 }
 
 extend type Mutation {

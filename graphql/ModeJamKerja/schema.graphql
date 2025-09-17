@@ -23,6 +23,18 @@ extend type Query {
 
     allModeJamKerjaArsip: [ModeJamKerja!]!
     @field(resolver: "App\\GraphQL\\ModeJamKerja\\Queries\\ModeJamKerjaQuery@allModeJamKerjaArsip")
+
+    allModeJamKerjaPaginate(
+        search: String
+        first: Int
+        page: Int
+    ): ModeJamKerjaPaginator
+    @field(resolver: "App\\GraphQL\\ModeJamKerja\\Queries\\ModeJamKerjaQuery@all")
+}
+
+type ModeJamKerjaPaginator {
+    data: [ModeJamKerja!]!
+    paginatorInfo: PageInfo!
 }
 
 extend type Mutation {

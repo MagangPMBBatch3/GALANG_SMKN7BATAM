@@ -25,4 +25,5 @@ async function createBagian() {
         body: JSON.stringify({ query: mutation })
     });
     closeAddModal();
+    loadDataPaginate();
 }

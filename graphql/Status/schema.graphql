@@ -28,6 +28,18 @@ extend type Query {
 
     allStatusArsip: [Status!]!
     @field(resolver: "App\\GraphQL\\Status\\Queries\\StatusQuery@allStatusArsip")   
+
+    allStatusPaginate(
+        search: String
+        first: Int
+        page: Int
+    ): StatusPaginator
+    @field(resolver: "App\\GraphQL\\Status\\Queries\\StatusQuery@all")
+}
+
+type StatusPaginator {
+    data: [Status!]!
+    paginatorInfo: PageInfo!
 }
 
 extend type Mutation {

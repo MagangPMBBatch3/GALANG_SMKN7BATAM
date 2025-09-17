@@ -23,6 +23,18 @@ extend type Query {
 
     allStatusJamKerjaArsip: [StatusJamKerja!]!
     @field(resolver: "App\\GraphQL\\StatusJamKerja\\Queries\\StatusJamKerjaQuery@allStatusJamKerjaArsip")
+
+    allStatusJamKerjaPaginate(
+        search: String
+        first: Int
+        page: Int
+    ): StatusJamKerjaPaginator
+    @field(resolver: "App\\GraphQL\\StatusJamKerja\\Queries\\StatusJamKerjaQuery@all")
+}
+
+type StatusJamKerjaPaginator {
+    data: [StatusJamKerja!]!
+    paginatorInfo: PageInfo!
 }
 
 extend type Mutation {

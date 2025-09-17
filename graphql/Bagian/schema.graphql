@@ -24,6 +24,13 @@ extend type Query {
     bagianByNama(nama: String! @where(operator: "like", key: "nama ")): [Bagian!]!
     @find(model: "App\\Models\\Bagian\\Bagians")
 
+ 
+    allBagianPaginate(
+        search: String
+        first: Int
+        page: Int
+    ): BagianPaginator
+    @field(resolver: "App\\GraphQL\\Bagian\\Queries\\BagianQuery@all")
 }
 
 type Mutation {
@@ -35,4 +42,11 @@ type Mutation {
 
     deleteBagian(id: ID! @eq(key: "id")): Bagian
     @delete(model: "App\\Models\\Bagian\\Bagians")
+}
+
+
+
+type BagianPaginator {
+    data: [Bagian!]!
+    paginatorInfo: PageInfo!
 }

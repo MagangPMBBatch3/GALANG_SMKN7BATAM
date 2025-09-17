@@ -46,7 +46,9 @@
                 </thead>
                 <tbody id="dataAktivitasArsip"></tbody>
             </table>
+            
         </div>
+
     </div>
 
     @include('components.aktivitas.modal-add')

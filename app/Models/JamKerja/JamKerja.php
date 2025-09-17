@@ -18,7 +18,7 @@ class JamKerja extends Model
 
     protected $fillable = [
         'user_profile_id',
-        'no_wbs',
+        'no_wbs',          
         'kode_proyek',
         'proyek_id',
         'Aktivitas_id',

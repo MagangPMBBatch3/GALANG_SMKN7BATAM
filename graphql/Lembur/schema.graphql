@@ -32,6 +32,18 @@ extend type Query {
 
     lembursByUserProfile(user_profile_id: ID! @where(operator: "like", key: "user_profile_id")): [Lembur!]!
     @all(model: "App\\Models\\Lembur\\Lembur")
+
+    allLemburPaginate(
+        search: String
+        first: Int
+        page: Int
+    ): LemburPaginator
+    @field(resolver: "App\\GraphQL\\Lembur\\Queries\\LemburQuery@all")
+}
+
+type LemburPaginator {
+    data: [Lembur!]!
+    paginatorInfo: PageInfo!
 }
 
 extend type Mutation {

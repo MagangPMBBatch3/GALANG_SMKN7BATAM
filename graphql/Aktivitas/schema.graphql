@@ -31,6 +31,21 @@ extend type Query {
 
     allAktivitasArsip: [Aktivitas!]!
     @field(resolver: "App\\GraphQL\\Aktivitas\\Queries\\AktivitasQuery@allAktivitasArsip")
+
+    
+    allAktivitasPaginate(
+        search: String
+        first: Int
+        page: Int
+    ): AktivitasPaginator
+    @field(resolver: "App\\GraphQL\\Aktivitas\\Queries\\AktivitasQuery@all")
+}
+
+
+
+type AktivitasPaginator {
+    data: [Aktivitas!]!
+    paginatorInfo: PageInfo!
 }
 
 extend type Mutation {
